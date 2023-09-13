@@ -84,11 +84,22 @@ $base64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.G
 # Define the API URL to create/update the file in the target branch
 $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath
 
+# Check if the file already exists in the repository
+$fileExists = $false
+$fileContent = $null
+try {
+    $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
+    $fileExists = $true
+}
+catch {
+    # The file doesn't exist
+}
+
 # Create a JSON body for the API request
 $requestBody = @{
     "branch" = $targetBranchName
     "message" = "Update Decrypted Data"
-    "content" = $decrypteddata
+    "content" = $base64Content  # Use the base64-encoded content
 } | ConvertTo-Json
 
 # Set the request headers with your personal access token
@@ -97,13 +108,26 @@ $headers = @{
     "Content-Type" = "application/json"
 }
 
-try {
-    # Make a PUT request to create/update the file in the target branch
-    Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
+# Determine whether to make a PUT or POST request based on whether the file exists
+if ($fileExists) {
+    # File already exists, make a PUT request to update it
+    try {
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
 
-    Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
+        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while updating the file: $_"
+    }
 }
-catch {
-    Write-Host "An error occurred: $_"
-}
+else {
+    # File doesn't exist, make a POST request to create it
+    try {
+        Invoke-RestMethod -Uri "https://api.github.com/repos/$githubUsername/$repositoryName/contents/$targetFilePath" -Headers $headers -Method POST -Body $requestBody
 
+        Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while creating the file: $_"
+    }
+}
