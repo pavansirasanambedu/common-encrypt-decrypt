@@ -31,21 +31,23 @@ try {
                 $encryptedValueBase64 = $credential.$field.EncryptedValue
                 $IVBase64 = $credential.$field.IV
 
-                Write-Host "IVBase64:$IVBase64"
+                if (![string]::IsNullOrEmpty($IVBase64)) {
+                    # Convert IV and encrypted value to bytes
+                    $IV = [System.Convert]::FromBase64String($IVBase64)
+                    $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
 
-                # Convert IV and encrypted value to bytes
-                $IV = [System.Convert]::FromBase64String($IVBase64)
-                $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
+                    # Create a decryptor with the specified IV
+                    $decryptor = $AES.CreateDecryptor($AES.Key, $IV)
 
-                # Create a decryptor with the specified IV
-                $decryptor = $AES.CreateDecryptor($AES.Key, $IV)
+                    # Decrypt the data
+                    $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
+                    $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
 
-                # Decrypt the data
-                $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
-                $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
-
-                # Update the JSON object with the decrypted value
-                $credential.$field = $decryptedText
+                    # Update the JSON object with the decrypted value
+                    $credential.$field = $decryptedText
+                } else {
+                    Write-Host "IV is missing for $field. Skipping decryption."
+                }
             }
         }
     }
@@ -61,6 +63,7 @@ try {
 catch {
     Write-Host "An error occurred: $_"
 }
+
 
 
 
