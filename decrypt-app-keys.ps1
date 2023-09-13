@@ -84,12 +84,19 @@ $base64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.G
 # Define the API URL to create/update the file in the target branch
 $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath
 
-# Check if the file already exists in the repository
+# Set the request headers with your personal access token
+$headers = @{
+    Authorization = "Bearer $githubToken"
+    "Content-Type" = "application/json"
+}
+
+# Check if the file already exists in the repository and fetch its current SHA
 $fileExists = $false
-$fileContent = $null
+$sha = $null
 try {
     $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
     $fileExists = $true
+    $sha = $fileContent.sha
 }
 catch {
     # The file doesn't exist
@@ -100,13 +107,8 @@ $requestBody = @{
     "branch" = $targetBranchName
     "message" = "Update Decrypted Data"
     "content" = $base64Content  # Use the base64-encoded content
+    "sha" = $sha  # Include the current SHA
 } | ConvertTo-Json
-
-# Set the request headers with your personal access token
-$headers = @{
-    Authorization = "Bearer $githubToken"
-    "Content-Type" = "application/json"
-}
 
 # Determine whether to make a PUT or POST request based on whether the file exists
 if ($fileExists) {
@@ -123,7 +125,7 @@ if ($fileExists) {
 else {
     # File doesn't exist, make a POST request to create it
     try {
-        Invoke-RestMethod -Uri "https://api.github.com/repos/$githubUsername/$repositoryName/contents/$targetFilePath" -Headers $headers -Method POST -Body $requestBody
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
 
         Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
     }
@@ -131,3 +133,4 @@ else {
         Write-Host "An error occurred while creating the file: $_"
     }
 }
+
