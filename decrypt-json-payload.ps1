@@ -35,25 +35,28 @@ try {
 
     # Loop through the specified fields and decrypt their values
     foreach ($field in $fieldsToDecrypt) {
-        Write-Host "field: $field" 
-        # Check if the field contains a valid Base64 string
-        if ($encryptedJsonData.credentials[0].$field -ne "System.Collections.Hashtable") {
-            $encryptedValueBase64 = $encryptedJsonData.credentials[0].$field.EncryptedValue
-            $IVBase64 = $encryptedJsonData.credentials[0].$field.IV
-
-            # Convert IV and encrypted value to bytes
-            $IV = [System.Convert]::FromBase64String($IVBase64)
-            $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
-
-            # Create a decryptor
-            $decryptor = $AES.CreateDecryptor($AES.Key, $IV)
-
-            # Decrypt the data
-            $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
-            $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
-
-            # Update the JSON object with the decrypted value
-            $encryptedJsonData.credentials[0].$field = $decryptedText
+        Write-Host "field: $field"
+    
+        # Loop through credentials
+        foreach ($credential in $encryptedJsonData.credentials) {
+            if ($credential.$field) {
+                $encryptedValueBase64 = $credential.$field.EncryptedValue
+                $IVBase64 = $credential.$field.IV
+    
+                # Convert IV and encrypted value to bytes
+                $IV = [System.Convert]::FromBase64String($IVBase64)
+                $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
+    
+                # Create a decryptor
+                $decryptor = $AES.CreateDecryptor($AES.Key, $IV)
+    
+                # Decrypt the data
+                $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
+                $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
+    
+                # Update the JSON object with the decrypted value
+                $credential.$field = $decryptedText
+            }
         }
     }
 
