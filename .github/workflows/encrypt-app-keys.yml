@@ -42,6 +42,7 @@ jobs:
           $env:sourcepath = "encrypt/encrypt-appkeys.json"
           $env:consumerkey = "consumerKey"
           $env:secretkey = "consumerSecret"
+          
           Invoke-Pester ./encrypt-app-keys.ps1 -Passthru
 
       - name: Remove GCP Credentials JSON File
