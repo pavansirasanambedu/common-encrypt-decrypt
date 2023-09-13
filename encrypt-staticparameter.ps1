@@ -2,7 +2,7 @@
 $keyHex = $env:key  # Replace with your encryption key
 
 # Define the git token
-$gittoken = $env:github_token  # Replace with your git token
+# $gittoken = $env:github_token  # Replace with your git token
 
 # Create a new AES object with the specified key and AES mode
 $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
