@@ -88,4 +88,42 @@ $headers = @{
 $fileExists = $false
 $sha = $null
 try {
-    $fileContent = Invoke-RestMethod -Uri $apiUrl
+    $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
+    $fileExists = $true
+    $sha = $fileContent.sha
+}
+catch {
+    # The file doesn't exist
+}
+
+# Create a JSON body for the API request
+$requestBody = @{
+    "branch" = $targetBranchName  # Corrected variable name
+    "message" = "Update Decrypted Data"
+    "content" = $updatedContentBase64  # Use the base64-encoded content
+    "sha" = $sha  # Include the current SHA
+} | ConvertTo-Json
+
+# Determine whether to make a PUT or POST request based on whether the file exists
+if ($fileExists) {
+    # File already exists, make a PUT request to update it
+    try {
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+
+        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while updating the file: $_"
+    }
+}
+else {
+    # File doesn't exist, make a POST request to create it
+    try {
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+
+        Write-Host "Decrypted data has been successfully created in $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while creating the file: $_"
+    }
+}
