@@ -63,12 +63,6 @@ jobs:
 
       - name: Push changes to Git
         run: |
-          # Configure Git with your GitHub credentials
-          git config --global user.email "rajeshjanapati533@gmail.com"  # Replace with your email
-          git config --global user.name "pavansirasanambedu"
-          
           # Push to the sub-branch "decrypt/appkeys"
-          git push origin HEAD:refs/heads/decrypt/appkeys
-        env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Use the secret you created earlier
+          git push origin main:refs/heads/decrypt/appkeys
 
