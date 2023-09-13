@@ -26,15 +26,18 @@ try {
 
         # Loop through credentials
         foreach ($credential in $jsonObject.credentials) {
+            Write-Host "Entered into 2nd for each...!"
             if ($credential.$field) {
                 $encryptedValueBase64 = $credential.$field.EncryptedValue
                 $IVBase64 = $credential.$field.IV
+
+                Write-Host "IVBase64:$IVBase64"
 
                 # Convert IV and encrypted value to bytes
                 $IV = [System.Convert]::FromBase64String($IVBase64)
                 $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
 
-                # Create a decryptor
+                # Create a decryptor with the specified IV
                 $decryptor = $AES.CreateDecryptor($AES.Key, $IV)
 
                 # Decrypt the data
@@ -58,6 +61,7 @@ try {
 catch {
     Write-Host "An error occurred: $_"
 }
+
 
 
 
