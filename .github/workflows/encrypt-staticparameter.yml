@@ -4,7 +4,7 @@ on:
 
 env:
   DEPLOYMENT_NAME: AES Encrypt Plain Text # TODO: update to deployment name
-
+  github_token: ${{ secrets.GITHUB_TOKEN }}
   key: ${{ secrets.key }}
 
 jobs:
