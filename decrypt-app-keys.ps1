@@ -95,77 +95,48 @@ $headers = @{
     "Content-Type" = "application/json"
 }
 
-# Fetch the latest content of the file from the source branch
+# Check if the file already exists in the repository and fetch its current SHA
+$fileExists = $false
+$sha = $null
 try {
-    $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers $headers
+    $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
+    $fileExists = $true
     $sha = $fileContent.sha
-    $currentContentBase64 = $fileContent.content
-    $currentContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($currentContentBase64))
-
-    # Compare the current content with the updated content
-    if ($currentContent -ne "Your updated content") {
-        # Create a JSON body for the API request to update the file
-        $requestBody = @{
-            "branch" = $sourceBranchName
-            "message" = "Update Decrypted Data"
-            "content" = $updatedContentBase64
-            "sha" = $sha
-        } | ConvertTo-Json
-
-        # Make a PUT request to update the file
-        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-
-        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $sourceBranchName."
-    } else {
-        Write-Host "No changes detected in the content. File not updated."
-    }
-} catch {
-    Write-Host "An error occurred while updating the file: $_"
+}
+catch {
+    # The file doesn't exist
 }
 
+# Create a JSON body for the API request
+$requestBody = @{
+    "branch" = $targetBranchName
+    "message" = "Update Decrypted Data"
+    "content" = $base64Content  # Use the base64-encoded content
+    "sha" = $sha  # Include the current SHA
+} | ConvertTo-Json
 
-# # Check if the file already exists in the repository and fetch its current SHA
-# $fileExists = $false
-# $sha = $null
-# try {
-#     $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
-#     $fileExists = $true
-#     $sha = $fileContent.sha
-# }
-# catch {
-#     # The file doesn't exist
-# }
+# Determine whether to make a PUT or POST request based on whether the file exists
+if ($fileExists) {
+    # File already exists, make a PUT request to update it
+    try {
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
 
-# # Create a JSON body for the API request
-# $requestBody = @{
-#     "branch" = $targetBranchName
-#     "message" = "Update Decrypted Data"
-#     "content" = $base64Content  # Use the base64-encoded content
-#     "sha" = $sha  # Include the current SHA
-# } | ConvertTo-Json
+        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while updating the file: $_"
+    }
+}
+else {
+    # File doesn't exist, make a POST request to create it
+    try {
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
 
-# # Determine whether to make a PUT or POST request based on whether the file exists
-# if ($fileExists) {
-#     # File already exists, make a PUT request to update it
-#     try {
-#         Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-
-#         Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
-#     }
-#     catch {
-#         Write-Host "An error occurred while updating the file: $_"
-#     }
-# }
-# else {
-#     # File doesn't exist, make a POST request to create it
-#     try {
-#         Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
-
-#         Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
-#     }
-#     catch {
-#         Write-Host "An error occurred while creating the file: $_"
-#     }
-# }
+        Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while creating the file: $_"
+    }
+}
 
 
