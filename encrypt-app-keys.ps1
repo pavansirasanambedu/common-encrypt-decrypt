@@ -20,6 +20,7 @@ $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
 # Loop through the specified fields and encrypt their values
 foreach ($field in $fieldsToEncrypt) {
+    $plaintext = $appdetailget.credentials[0].$field
     # Check if the credentials array exists and has at least one item
     if ($appdetailget.credentials.Count -gt 0) {
 
