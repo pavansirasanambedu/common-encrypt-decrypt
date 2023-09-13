@@ -118,10 +118,10 @@ if ($currentContent -ne $null -and $updatedBase64Content -ne $currentContent) {
     git fetch origin $targetBranchName
 
     # Create a new branch for merging the changes
-    git checkout -b $targetBranchName
+    git checkout -b merge-branch origin/$targetBranchName
 
     # Merge the changes from the current branch into the merge-branch
-    # git merge HEAD origin/$branchName
+    git merge HEAD origin/$branchName
 
     # Apply your updates
     echo $decrypteddata | Set-Content -Path $targetFilePath -Encoding UTF8
@@ -130,7 +130,7 @@ if ($currentContent -ne $null -and $updatedBase64Content -ne $currentContent) {
     git commit -am "Merge and update decrypted data"
 
     # Push the changes to the target branch
-    git push -f origin $targetBranchName
+    git push origin merge-branch:$targetBranchName
 
     Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
 }
