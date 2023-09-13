@@ -1,1 +1,37 @@
-
+{
+  "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
+  "attributes": [
+    {
+      "name": "developer-test-app",
+      "value": "developer app"
+    }
+  ],
+  "createdAt": "1694199580434",
+  "credentials": [
+    {
+      "consumerKey": {
+        "EncryptedValue": "2RkbsB8cPaTAjAT8rzpRC/YalFITD5sro5X8xiXtHf2cRMu9NbuVQVYEw385iiL7EMwcscLsgHr6yCBRdYGPyw==",
+        "IV": "M11xvSa9YtPYcHbgtzrumA=="
+      },
+      "consumerSecret": {
+        "EncryptedValue": "C3djCKduQTsnqOm/EhRFbcDZsdYPsx1GoM4uiDhaL1O7ykmsxQeFn65611oiK0To1Q2Ok16ZMEOxTrH+EA5Q2NNeTXT3MvYzrIzARfMg0GI=",
+        "IV": "MN7+RrYRoB1sRdNL0DCzuQ=="
+      },
+      "expiresAt": "-1",
+      "issuedAt": "1694199580447",
+      "status": "approved"
+    },
+    {
+      "consumerKey": "test153",
+      "consumerSecret": "6Wr30X2JASQew2htest",
+      "expiresAt": "1694199760844",
+      "issuedAt": "1694199580844",
+      "status": "approved"
+    }
+  ],
+  "developerId": "8770a62a-791d-4ba3-9502-ac5bde4f84ff",
+  "lastModifiedAt": "1694199580434",
+  "name": "developer-test-app",
+  "status": "approved",
+  "appFamily": "default"
+}
