@@ -68,92 +68,93 @@ foreach ($field in $fieldsToDecrypt) {
 $decrypteddata = $encryptedJsonData | ConvertTo-Json -Depth 10
 
 Write-Host $decrypteddata
-$targetFilePath = "decrypt/decrypt-appkeys.json"
 
-# Write the JSON data to the file
-$decrypteddata | Set-Content -Path $targetFilePath -Encoding UTF8
+# $targetFilePath = "decrypt/decrypt-appkeys.json"
 
-# # Define your GitHub username, repository name, target branch name, and file path in the target branch
-# $githubUsername = "pavansirasanambedu"
-# $repositoryName = "common-encrypt-decrypt"
-# $targetBranchName = "decrypt/appkeys"  # The branch where you want to create/update the file
-# $targetFilePath = "decrypt/decrypt-appkeys.json"  # Replace with the actual file path in the target branch
+# # Write the JSON data to the file
+# $decrypteddata | Set-Content -Path $targetFilePath -Encoding UTF8
 
-# # Define your GitHub personal access token
-# $githubToken = $git_token
+# Define your GitHub username, repository name, target branch name, and file path in the target branch
+$githubUsername = "pavansirasanambedu"
+$repositoryName = "common-encrypt-decrypt"
+$targetBranchName = "decrypt/appkeys"  # The branch where you want to create/update the file
+$targetFilePath = "decrypt/decrypt-appkeys.json"  # Replace with the actual file path in the target branch
 
-# # Encode the decrypted content as base64
-# $base64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
+# Define your GitHub personal access token
+$githubToken = $git_token
 
-# # Define the API URL to create/update the file in the target branch
-# $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath
+# Encode the decrypted content as base64
+$base64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
 
-# # Set the request headers with your personal access token
-# $headers = @{
-#     Authorization = "Bearer $githubToken"
-#     "Content-Type" = "application/json"
-# }
+# Define the API URL to create/update the file in the target branch
+$apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath
+
+# Set the request headers with your personal access token
+$headers = @{
+    Authorization = "Bearer $githubToken"
+    "Content-Type" = "application/json"
+}
 
 
-# # Check if the file already exists in the repository and fetch its current SHA
-# $fileExists = $false
-# $sha = $null
-# try {
-#     $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
-#     $fileExists = $true
-#     $sha = $fileContent.sha
-#     # Decode the current content from base64
-#     $currentContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
-# }
-# catch {
-#     # The file doesn't exist
-#     $currentContent = $null
-# }
+# Check if the file already exists in the repository and fetch its current SHA
+$fileExists = $false
+$sha = $null
+try {
+    $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
+    $fileExists = $true
+    $sha = $fileContent.sha
+    # Decode the current content from base64
+    $currentContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
+}
+catch {
+    # The file doesn't exist
+    $currentContent = $null
+}
 
-# # Update the content only if it's different from the current content
-# if ($currentContent -ne $null -and $decrypteddata -ne $currentContent) {
-#     # Encode the updated content as base64
-#     $updatedBase64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
+# Update the content only if it's different from the current content
+if ($currentContent -ne $null -and $decrypteddata -ne $currentContent) {
+    # Encode the updated content as base64
+    $updatedBase64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
 
-#     # Create a JSON body for the API request with the updated content and SHA
-#     $requestBody = @{
-#         "branch" = $targetBranchName
-#         "message" = "Update Decrypted Data"
-#         "content" = $updatedBase64Content
-#         "sha" = $sha  # Include the current SHA
-#     } | ConvertTo-Json
+    # Create a JSON body for the API request with the updated content and SHA
+    $requestBody = @{
+        "branch" = $targetBranchName
+        "message" = "Update Decrypted Data"
+        "content" = $updatedBase64Content
+        "sha" = $sha  # Include the current SHA
+    } | ConvertTo-Json
 
-#     try {
-#         # Make a PUT request to update the file with the new content
-#         Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-#         Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
-#     }
-#     catch {
-#         Write-Host "An error occurred while updating the file: $_"
-#     }
-# }
-# elseif ($currentContent -eq $null) {
-#     # File doesn't exist, create a new one
-#     try {
-#         # Use the updated content to create a new file
-#         $requestBody = @{
-#             "branch" = $targetBranchName
-#             "message" = "Create Decrypted Data"
-#             "content" = $base64Content  # Use the base64-encoded content
-#         } | ConvertTo-Json
+    try {
+        # Make a PUT request to update the file with the new content
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while updating the file: $_"
+    }
+}
+elseif ($currentContent -eq $null) {
+    # File doesn't exist, create a new one
+    try {
+        # Use the updated content to create a new file
+        $requestBody = @{
+            "branch" = $targetBranchName
+            "message" = "Create Decrypted Data"
+            "content" = $base64Content  # Use the base64-encoded content
+        } | ConvertTo-Json
 
-#         # Make a POST request to create the file
-#         Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
+        # Make a POST request to create the file
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
 
-#         Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
-#     }
-#     catch {
-#         Write-Host "An error occurred while creating the file: $_"
-#     }
-# }
-# else {
-#     Write-Host "No changes detected in the content. File not updated."
-# }
+        Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while creating the file: $_"
+    }
+}
+else {
+    Write-Host "No changes detected in the content. File not updated."
+}
 
 
 # # Check if the file already exists in the repository and fetch its current SHA
