@@ -1,4 +1,4 @@
-name: Encrypt Json Payload
+name: Decrypt Json Payload
 
 on:
   workflow_dispatch:
@@ -41,7 +41,7 @@ env:
 
 jobs:
   apigee-window-artifacts:
-    name: Encrypt Json Payload
+    name: Decrypt Json Payload
     runs-on: ubuntu-latest
 
     permissions:
@@ -55,7 +55,7 @@ jobs:
           fetch-depth: 0
           token: "${{ secrets.GIT_TOKEN }}"
 
-      - name: Encrypt Json Payload
+      - name: Decrypt Json Payload
         shell: pwsh
         run: |
           $env:ORG = "${{ secrets.APIGEE_ORG }}"
