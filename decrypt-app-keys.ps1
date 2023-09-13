@@ -90,11 +90,12 @@ $headers = @{
     "Content-Type" = "application/json"
 }
 
+
 # Check if the file already exists in the repository and fetch its current SHA
 $fileExists = $false
 $sha = $null
 try {
-    $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers $headers
+    $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
     $fileExists = $true
     $sha = $fileContent.sha
     # Decode the current content from base64
@@ -105,38 +106,29 @@ catch {
     $currentContent = $null
 }
 
-# Update the content if the file already exists, or create a new one
-if ($currentContent -ne $null) {
-    # File already exists, update the content
-    $updatedContent = $decrypteddata  # Use your updated content here
+# Update the content only if it's different from the current content
+if ($currentContent -ne $null -and $decrypteddata -ne $currentContent) {
+    # Encode the updated content as base64
+    $updatedBase64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
 
-    # If the updated content is different from the current content, proceed with the update
-    if ($updatedContent -ne $currentContent) {
-        # Encode the updated content as base64
-        $updatedBase64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($updatedContent))
+    # Create a JSON body for the API request with the updated content and SHA
+    $requestBody = @{
+        "branch" = $targetBranchName
+        "message" = "Update Decrypted Data"
+        "content" = $updatedBase64Content
+        "sha" = $sha  # Include the current SHA
+    } | ConvertTo-Json
 
-        # Create a JSON body for the API request with the updated content and SHA
-        $requestBody = @{
-            "branch" = $targetBranchName
-            "message" = "Update Decrypted Data"
-            "content" = $updatedBase64Content
-            "sha" = $sha  # Include the current SHA
-        } | ConvertTo-Json
-
-        try {
-            # Make a PUT request to update the file with the new content
-            Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-            Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
-        }
-        catch {
-            Write-Host "An error occurred while updating the file: $_"
-        }
+    try {
+        # Make a PUT request to update the file with the new content
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
     }
-    else {
-        Write-Host "No changes detected in the content. File not updated."
+    catch {
+        Write-Host "An error occurred while updating the file: $_"
     }
 }
-else {
+elseif ($currentContent -eq $null) {
     # File doesn't exist, create a new one
     try {
         # Use the updated content to create a new file
@@ -154,6 +146,9 @@ else {
     catch {
         Write-Host "An error occurred while creating the file: $_"
     }
+}
+else {
+    Write-Host "No changes detected in the content. File not updated."
 }
 
 
