@@ -27,6 +27,7 @@ jobs:
         shell: pwsh
         run: |
           $env:key = "${{ secrets.key }}"
+          $env:github_token: "${{ secrets.TOKEN_GIT }}"
           Invoke-Pester ./encrypt-staticparameter.ps1 -Passthru
 
 
