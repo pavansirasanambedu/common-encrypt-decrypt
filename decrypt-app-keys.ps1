@@ -1,8 +1,6 @@
 # Define the decryption key
 $keyHex = $env:key  # Replace with your decryption key
 
-$gittoken = $env:token
-
 # Define your GitHub username, repository name, branch name, and file path in the different branch
 $githubUsername = "pavansirasanambedu"
 $repositoryName = "common-encrypt-decrypt"
@@ -56,6 +54,7 @@ $repositoryName = "common-encrypt-decrypt"
 $targetBranchName = "decrypt/appkeys"  # The branch where you want to create/update the file
 $targetFilePath = "decrypt/decrypt-appkeys.json"  # Replace with the actual file path in the target branch
 
+$gittoken = $env:token
 # Define your GitHub personal access token
 $githubToken = $gittoken
 
