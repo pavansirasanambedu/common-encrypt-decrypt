@@ -6,7 +6,7 @@ on:
 env:
   DEPLOYMENT_NAME: Encrypt App Keys
   key: ${{ secrets.key }}
-  FIELDS_TO_ENCRYPT: "consumerKey,consumerSecret"
+  FIELDS_TO_ENCRYPT: '"consumerKey","consumerSecret"'
 
 
 jobs:
