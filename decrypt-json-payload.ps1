@@ -5,7 +5,7 @@ $fileContent = $env:jsonInput
 Write-Host "fileContent: $fileContent"
 
 # Specify the fields you want to encrypt
-$fieldsToDecrypt = $env:fieldsToEncrypt -split ","
+$fieldsToDecrypt = $env:fieldsToDecrypt -split ","
 
 Write-Host "fieldsToDecrypt: $fieldsToDecrypt"
 
