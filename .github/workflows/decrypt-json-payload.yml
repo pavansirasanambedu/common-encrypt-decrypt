@@ -1,0 +1,69 @@
+name: Encrypt Json Payload
+
+on:
+  workflow_dispatch:
+
+env:
+  DEPLOYMENT_NAME: Encrypt Json Payload
+  key: ${{ secrets.key }}
+  JSON_DATA: |
+    {
+      "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
+      "attributes": [
+        {
+          "name": "developer-test-app",
+          "value": "developer app"
+        }
+      ],
+      "createdAt": "1694199580434",
+      "credentials": [
+        {
+          "consumerKey": "8RTg8AsdwpOgk3792d8A7LHgKxyKDGt1s4y3G7iNuOeYZrTb",
+          "consumerSecret": "y25ueTdsKPQaHhZ4Ru9wcORo9YItaGLSRoEgneLBBoTCtprLKEVEQTUSGqU2thTE",
+          "expiresAt": "-1",
+          "issuedAt": "1694199580447",
+          "status": "approved"
+        },
+        {
+          "consumerKey": "test153",
+          "consumerSecret": "6Wr30X2JASQew2htest",
+          "expiresAt": "1694199760844",
+          "issuedAt": "1694199580844",
+          "status": "approved"
+        }
+      ],
+      "developerId": "8770a62a-791d-4ba3-9502-ac5bde4f84ff",
+      "lastModifiedAt": "1694199580434",
+      "name": "developer-test-app",
+      "status": "approved",
+      "appFamily": "default"
+    }
+
+jobs:
+  apigee-window-artifacts:
+    name: Encrypt Json Payload
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Check out Git repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: "${{ secrets.GIT_TOKEN }}"
+
+      - name: Encrypt Json Payload
+        shell: pwsh
+        run: |
+          $env:ORG = "${{ secrets.APIGEE_ORG }}"
+          $env:TOKEN = "${{ steps.auth.outputs.access_token }}"
+          $env:key = "${{ secrets.key }}"
+          
+          # Pass the JSON_DATA environment variable as input to your script
+          $jsonInput = $env:JSON_DATA | ConvertFrom-Json
+          $jsonInput | ConvertTo-Json | Set-Content -Path "json-input-file.json"
+          
+          Invoke-Pester ./decrypt-json-payload.ps1 -Passthru
