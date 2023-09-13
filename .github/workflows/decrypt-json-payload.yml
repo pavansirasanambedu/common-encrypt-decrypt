@@ -6,7 +6,7 @@ on: push
 env:
   DEPLOYMENT_NAME: Decrypt Json Payload
   key: ${{ secrets.key }}
-  FIELDS_TO_DECRYPT: "consumerKey,consumerSecret"
+  FIELDS_TO_DECRYPT: '"consumerKey","consumerSecret"'
   JSON_DATA: |
     {
       "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
