@@ -11,7 +11,7 @@ Write-Host "fieldsToDecrypt: $fieldsToDecrypt"
 
 try {
     # Parse and display the file content (in this case, it's assumed to be JSON)
-    $jsonContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
+    $jsonContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent))
 
     # Parse the JSON content into a PowerShell object
     $jsonObject = $jsonContent | ConvertFrom-Json
