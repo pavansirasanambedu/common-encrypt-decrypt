@@ -2,6 +2,9 @@ $git_token = $env:token
 
 $fileContent = $env:jsonInput
 
+# Specify the fields you want to encrypt
+$fieldsToDecrypt = $env:fieldsToEncrypt -split ","
+
 try {
     # Parse and display the file content (in this case, it's assumed to be JSON)
     $jsonContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
