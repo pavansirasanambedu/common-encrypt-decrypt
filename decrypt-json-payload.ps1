@@ -1,8 +1,8 @@
 $git_token = $env:token
 
 $fileContent = $env:jsonInput
-$jsondata2 = $fileContent | ConvertTo-Json
-Write-Host "fileContent: $jsondata2"
+
+Write-Host "fileContent: $fileContent"
 
 # Specify the fields you want to encrypt
 $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
@@ -19,7 +19,7 @@ try {
     # Convert the modified JSON data back to a PowerShell object
     $encryptedJsonData = $jsonContent | ConvertFrom-Json
 
-    Write-Host $encryptedJsonData | ConvertTo-Json
+    Write-Host $encryptedJsonData
 
     # Specify the fields you want to encrypt
     $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
@@ -39,6 +39,7 @@ try {
     
         # Loop through credentials
         foreach ($credential in $encryptedJsonData.credentials) {
+            Write-Host "entered into 2nd foreach...!"
             if ($credential.$field) {
                 $encryptedValueBase64 = $credential.$field.EncryptedValue
                 $IVBase64 = $credential.$field.IV
