@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Set Git identity
         run: |
-          git config --global user.email "rajeshjanapati533@gmail.com"
+          git config --global user.email "pavan.sirasanambedu@gmail.com"
           git config --global user.name "pavansirasanambedu"
 
       - name: Check out repository code
@@ -39,10 +39,12 @@ jobs:
           $env:sourcebranchName = "encrypt/jsonfile"
           $env:sourcefilePath = "jsonfile/appdata.json"
 
+          # $env:fieldsToEncrypt = "["consumerKey", "consumerSecret"]" #this is still pending and have to get field name dynamically from yml file.
+
           $env:targetgithubUsername = "pavansirasanambedu"
           $env:targetrepositoryName = "common-encrypt-decrypt"
           $env:targetBranchName = "encrypt/jsonfile" 
-          $env:targetFilePath = "encrypt-jsonfile/encrypt-jsondata.json" 
+          $env:targetFilePath = "encrypt-jsonfile/encrypt-jsondata.json"
           
     
           Invoke-Pester ./encrypt-json-file.ps1 -Passthru
