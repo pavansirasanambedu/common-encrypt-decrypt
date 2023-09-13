@@ -43,7 +43,7 @@ jobs:
           $env:sourcepath = "encrypt/encrypt-appkeys.json"
 
           # Split the fieldsToEncrypt environment variable into an array
-          $env:fieldsToEncrypt = "($env:fieldsToEncrypt -split ',')
+          $env:fieldsToEncrypt = $env:fieldsToEncrypt -split ','
 
           #  @($env:consumerkey, $env:secretkey)
 
