@@ -5,7 +5,8 @@ on:
 
 env:
   DEPLOYMENT_NAME: Encrypt App Keys
-  key: ${{ secrets.key }}
+  key: ${{ secrets.key }} 
+
 
 jobs:
   apigee-window-artifacts:
@@ -38,6 +39,9 @@ jobs:
           $env:ORG = "${{ secrets.APIGEE_ORG }}"
           $env:TOKEN = "${{ steps.auth.outputs.access_token }}"
           $env:key = "${{ secrets.key }}"
+          $env:sourcepath = "encrypt/encrypt-appkeys.json"
+          $env:consumerkey = "consumerKey"
+          $env:secretkey = "consumerSecret"
           Invoke-Pester ./encrypt-app-keys.ps1 -Passthru
 
       - name: Remove GCP Credentials JSON File
