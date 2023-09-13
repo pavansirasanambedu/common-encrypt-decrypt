@@ -7,16 +7,9 @@ Write-Host "Entered into Scripts"
 $appdetailget = Invoke-RestMethod -Uri "https://apigee.googleapis.com/v1/organizations/esi-apigee-x-394004/developers/test.developer@gmail.com/apps/developer-test-app" -Method 'GET' -Headers $headers
 
 # Specify the fields you want to encrypt
-$fieldsToEncrypt = $env:fieldsToEncrypt
+$fieldsToEncrypt = $env:fieldsToEncrypt -split ","
 
-Write-Host "FieldsToEncrypt: $fieldsToEncrypt"
-
-Write-Host "Credentials Array: $($appdetailget.credentials | ConvertTo-Json -Depth 2)"
-Write-Host "First Item in Credentials: $($appdetailget.credentials[0] | ConvertTo-Json -Depth 2)"
-
-$plaintext = $appdetailget.credentials[0].consumerKey
-Write-Host "PlainText (consumerKey): $plaintext"
-
+Write-Host "FieldsToEncrypt: $env:fieldsToEncrypt"
 
 # Encryption key
 $keyHex = $env:key  # Replace with your encryption key
@@ -29,12 +22,13 @@ $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
 # Loop through the specified fields and encrypt their values
 foreach ($field in $fieldsToEncrypt) {
-    $plaintext = $appdetailget.credentials[0].$field
-    Write-Host "plaintext: $plaintext"
     # Check if the credentials array exists and has at least one item
     if ($appdetailget.credentials.Count -gt 0) {
+        Write-Host "Field: $field"
 
+        # Access the value of the current field
         $plaintext = $appdetailget.credentials[0].$field
+        Write-Host "Plain Text: $plaintext"
 
         # Convert plaintext to bytes (UTF-8 encoding)
         $plaintextBytes = [System.Text.Encoding]::UTF8.GetBytes($plaintext)
