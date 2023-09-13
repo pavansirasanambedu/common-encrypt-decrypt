@@ -4,54 +4,30 @@ on:
   workflow_dispatch:
 
 env:
-
   DEPLOYMENT_NAME: Decrypt App Keys # TODO: update to deployment name
-  
   key: ${{ secrets.key }}
 
-
- 
-
 jobs:
-
   apigee-window-artifacts:
-
     name: Decrypt App Keys
-
     runs-on: ubuntu-latest
 
- 
-
     permissions:
-
       contents: 'read'
-
       id-token: 'write'
 
- 
-
     steps:
-
       - name: Check out repository code
-
         uses: actions/checkout@v3
-
         with:
-
           persist-credentials: false
-
           fetch-depth: 0
 
- 
-
       - name: Decrypt App Keys
-
         shell: pwsh
-
         run: |
           $env:token = "${{ secrets.GIT_TOKEN }}"
           $env:key = "${{ secrets.key }}"
-
           Invoke-Pester ./decrypt-app-keys.ps1 -Passthru
 
       - name: Debug Git Config
@@ -60,9 +36,9 @@ jobs:
 
       - name: Add local files to Git local branch
         run: |
-            git config --global user.email "rajeshjanapati533@gmail.com"
-            git config --global user.name "pavansirasanambedu"
-            git add .
+          git config --global user.email "rajeshjanapati533@gmail.com"
+          git config --global user.name "pavansirasanambedu"
+          git add .
 
       - name: Check for delta changes - Git
         id: check_git_changes
@@ -87,4 +63,5 @@ jobs:
 
       - name: Push changes to Git
         run: |
-          git push origin decrypt/appkeys
+          # Push to the sub-branch "decrypt/appkeys"
+          git push origin HEAD:refs/heads/decrypt/appkeys
