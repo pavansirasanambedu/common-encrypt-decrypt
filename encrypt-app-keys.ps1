@@ -9,6 +9,8 @@ $appdetailget = Invoke-RestMethod -Uri "https://apigee.googleapis.com/v1/organiz
 # Specify the fields you want to encrypt
 $fieldsToEncrypt = $env:fieldsToEncrypt
 
+Write-Host "FieldsToEncrypt: $fieldsToEncrypt"
+
 # Encryption key
 $keyHex = $env:key  # Replace with your encryption key
 
