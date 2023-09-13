@@ -19,8 +19,8 @@ try {
     # Convert the modified JSON data back to a PowerShell object
     $encryptedJsonData = $jsonContent | ConvertFrom-Json
 
-    # Specify the fields you want to decrypt
-    $fieldsToDecrypt = $env:fieldsToDecrypt
+    # Specify the fields you want to encrypt
+    $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
 
     # Decryption key (use the same key you used for encryption)
     $keyHex = $env:key
@@ -33,6 +33,7 @@ try {
 
     # Loop through the specified fields and decrypt their values
     foreach ($field in $fieldsToDecrypt) {
+        Write-Host "field: $field" 
         # Check if the field contains a valid Base64 string
         if ($encryptedJsonData.credentials[0].$field -ne "System.Collections.Hashtable") {
             $encryptedValueBase64 = $encryptedJsonData.credentials[0].$field.EncryptedValue
