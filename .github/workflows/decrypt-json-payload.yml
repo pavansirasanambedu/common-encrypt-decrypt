@@ -1,43 +1,50 @@
 name: Decrypt Json Payload
 
-on:
-  workflow_dispatch:
+on: push
+  # workflow_dispatch:
 
 env:
   DEPLOYMENT_NAME: Encrypt Json Payload
   key: ${{ secrets.key }}
+  FIELDS_TO_ENCRYPT: "consumerKey,consumerSecret"
   JSON_DATA: |
     {
-      "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
-      "attributes": [
-        {
-          "name": "developer-test-app",
-          "value": "developer app"
-        }
-      ],
-      "createdAt": "1694199580434",
-      "credentials": [
-        {
-          "consumerKey": "8RTg8AsdwpOgk3792d8A7LHgKxyKDGt1s4y3G7iNuOeYZrTb",
-          "consumerSecret": "y25ueTdsKPQaHhZ4Ru9wcORo9YItaGLSRoEgneLBBoTCtprLKEVEQTUSGqU2thTE",
-          "expiresAt": "-1",
-          "issuedAt": "1694199580447",
-          "status": "approved"
-        },
-        {
-          "consumerKey": "test153",
-          "consumerSecret": "6Wr30X2JASQew2htest",
-          "expiresAt": "1694199760844",
-          "issuedAt": "1694199580844",
-          "status": "approved"
-        }
-      ],
-      "developerId": "8770a62a-791d-4ba3-9502-ac5bde4f84ff",
-      "lastModifiedAt": "1694199580434",
+  "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
+  "attributes": [
+    {
       "name": "developer-test-app",
-      "status": "approved",
-      "appFamily": "default"
+      "value": "developer app"
     }
+  ],
+  "createdAt": "1694199580434",
+  "credentials": [
+    {
+      "consumerKey": {
+        "EncryptedValue": "daIwEBCWL0dXm+aFzGjdYvywspmfj8K2Ukdq4UBUSZbLROVhA7JjSYZa8OkFbl90Bco11dqpjTtzjLu0LGsKHw==",
+        "IV": "X+Pk6taWIydevcgAtDvi0g=="
+      },
+      "consumerSecret": {
+        "EncryptedValue": "a6NKCf1TCza/p074NbP1QpqG9YLiQjysnk+CDE2GsCM58Ti98IIFXDU7gN8nyA6YzHpjUDx2wAFIzt1HeM/DKyiRIvD05KqjHLYww6FcauM=",
+        "IV": "VSweQbGAEqPBXXNdBas3gA=="
+      },
+      "expiresAt": "-1",
+      "issuedAt": "1694199580447",
+      "status": "approved"
+    },
+    {
+      "consumerKey": "test153",
+      "consumerSecret": "6Wr30X2JASQew2htest",
+      "expiresAt": "1694199760844",
+      "issuedAt": "1694199580844",
+      "status": "approved"
+    }
+  ],
+  "developerId": "8770a62a-791d-4ba3-9502-ac5bde4f84ff",
+  "lastModifiedAt": "1694199580434",
+  "name": "developer-test-app",
+  "status": "approved",
+  "appFamily": "default"
+}
 
 jobs:
   apigee-window-artifacts:
@@ -61,6 +68,8 @@ jobs:
           $env:ORG = "${{ secrets.APIGEE_ORG }}"
           $env:TOKEN = "${{ steps.auth.outputs.access_token }}"
           $env:key = "${{ secrets.key }}"
+
+          $env:fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT
           
           # Pass the JSON_DATA environment variable as input to your script
           $jsonInput = $env:JSON_DATA | ConvertFrom-Json
