@@ -2,7 +2,7 @@ $git_token = $env:token
 
 $githubUsername = "pavansirasanambedu"
 $repositoryName = "common-encrypt-decrypt"
-$branchName = "decrypt/jsonfile"
+$branchName = "encrypt/jsonfile"
 $filePath = "encrypt-jsonfile/encrypt.json"
 
 $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$filePath+"?ref="+$branchName
