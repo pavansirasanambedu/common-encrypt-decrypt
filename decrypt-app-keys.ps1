@@ -88,7 +88,7 @@ $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/
 $requestBody = @{
     "branch" = $targetBranchName
     "message" = "Update Decrypted Data"
-    "content" = $base64Content
+    "content" = $decrypteddata
 } | ConvertTo-Json
 
 # Set the request headers with your personal access token
@@ -99,7 +99,7 @@ $headers = @{
 
 try {
     # Make a PUT request to create/update the file in the target branch
-    Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+    Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
 
     Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
 }
