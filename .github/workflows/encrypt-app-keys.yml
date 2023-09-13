@@ -6,7 +6,7 @@ on: push
 env:
   DEPLOYMENT_NAME: Encrypt App Keys
   key: ${{ secrets.key }}
-  fieldsToEncrypt: "consumerKey,consumerSecret" # Comma-separated list of fields to encrypt
+  fieldsToEncrypt: "consumerKey", "consumerSecret" # Comma-separated list of fields to encrypt
 
 
 jobs:
