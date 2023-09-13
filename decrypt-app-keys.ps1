@@ -1,13 +1,13 @@
 $git_token = $env:token
 
 # Define your GitHub username, repository names, branch name, and file path
-$githubUsername = "pavansirasanambedu"
-$sourceRepo = "common-encrypt-decrypt"
-$branchName = "encrypt/appkeys"
-$filePath = "encrypt/encrypt-appkeys.json"
+$githubUsername = $env:sourcegithubUsername
+$sourceRepo = $env:sourceRepo
+$sourcebranchname = $env:sourcebranchname
+$filePath = $env:filePath
 
 # Define the GitHub API URL for fetching the file content from a specific branch
-$apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$sourceRepo+"/contents/"+$filePath+"?ref="+$branchName
+$apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$sourceRepo+"/contents/"+$filePath+"?ref="+$sourcebranchname
 
 # Set the request headers with your PAT
 $headers = @{
@@ -28,7 +28,7 @@ try {
     $encryptedJsonData = $jsonContent | ConvertFrom-Json
 
     # Specify the fields you want to decrypt
-    $fieldsToDecrypt = @("consumerKey", "consumerSecret")
+    $fieldsToDecrypt = $env:fieldsToDecrypt
 
     # Decryption key (use the same key you used for encryption)
     $keyHex = $env:key
@@ -69,10 +69,10 @@ try {
     Write-Host $decrypteddata
 
     # Define your GitHub username, repository names, branch names, and file paths
-    $githubUsername = "pavansirasanambedu"
-    $repositoryName = "common-encrypt-decrypt"
-    $sourceBranchName = "decrypt/appkeys"  # Source branch where you want to update the file
-    $targetFilePath = "decrypt/decrypt-appkeys.json"  # File path in the source branch
+    $githubUsername = $env:targetgithubUsername
+    $repositoryName = $env:repositoryName
+    $targetBranchName = $env:targetBranchName
+    $targetFilePath = $env:targetFilePath
 
     # Define your GitHub personal access token
     $githubToken = $git_token  # Replace with your GitHub token
@@ -82,7 +82,7 @@ try {
     $updatedContentBase64 = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($updatedContent))
     
     # Define the API URL to fetch the file content from the source branch
-    $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath+"?ref="+$sourceBranchName
+    $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath+"?ref="+$targetBranchName
     
     # Set the request headers with your personal access token
     $headers = @{
