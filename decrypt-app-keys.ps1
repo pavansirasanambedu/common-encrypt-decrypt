@@ -1,16 +1,38 @@
-# Define the decryption key
-$keyHex = $env:key  # Replace with your decryption key
+$git_token = $env:token
 
-# Define your GitHub username, repository name, branch name, and file path in the different branch
+# Define your GitHub username, repository names, branch name, and file path
 $githubUsername = "pavansirasanambedu"
-$repositoryName = "common-encrypt-decrypt"
-$branchName = "encrypt/appkeys"  # The name of the branch where the file is located
-$filePath = "encrypt/encrypt-appkeys.json"  # Replace with the actual file path in the branch
+$sourceRepo = "common-encrypt-decrypt"
+$branchName = "encrypt/appkeys"
+$filePath = "encrypt/encrypt-appkeys.json"
+
+# Define the GitHub API URL for fetching the file content from a specific branch
+$apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$sourceRepo+"/contents/"+$filePath+"?ref="+$branchName
+
+# Set the request headers with your PAT
+$headers = @{
+    Authorization = "Bearer $git_token"
+}
+
+# Make a GET request to fetch the file content
+$fileContent = Invoke-RestMethod $apiUrl -Headers $headers
+
+# Parse and display the file content (in this case, it's assumed to be JSON)
+$jsonContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
+
+# Parse the JSON content into a PowerShell object
+$jsonObject = $jsonContent | ConvertFrom-Json
 
 
-# # Read the encrypted JSON data from a file
-# $filePath = "path/to/your/encrypted_data.json"
-$encryptedJsonData = Get-Content -Path $filePath | ConvertFrom-Json
+# Convert the modified JSON data back to a PowerShell object
+$encryptedJsonData = $jsonContent | ConvertFrom-Json
+
+
+# Specify the fields you want to decrypt
+$fieldsToDecrypt = @("consumerKey", "consumerSecret")
+
+# Decryption key (use the same key you used for encryption)
+$keyHex = $env:key
 
 # Create a new AES object with the specified key and AES mode
 $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
@@ -18,12 +40,10 @@ $AES.KeySize = 256  # Set the key size to 256 bits for AES-256
 $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
 $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
-# Specify the fields you want to decrypt
-$fieldsToDecrypt = @("consumerKey", "consumerSecret")
-
 # Loop through the specified fields and decrypt their values
 foreach ($field in $fieldsToDecrypt) {
-    if ($encryptedJsonData.credentials[0].$field -ne $null) {
+    # Check if the field contains a valid Base64 string
+    if ($encryptedJsonData.credentials[0].$field -ne "System.Collections.Hashtable") {
         $encryptedValueBase64 = $encryptedJsonData.credentials[0].$field.EncryptedValue
         $IVBase64 = $encryptedJsonData.credentials[0].$field.IV
 
@@ -40,6 +60,7 @@ foreach ($field in $fieldsToDecrypt) {
 
         # Update the JSON object with the decrypted value
         $encryptedJsonData.credentials[0].$field = $decryptedText
+
     }
 }
 
@@ -47,42 +68,3 @@ foreach ($field in $fieldsToDecrypt) {
 $decrypteddata = $encryptedJsonData | ConvertTo-Json -Depth 10
 
 Write-Host $decrypteddata
-
-# Define your GitHub username, repository name, target branch name, and file path in the target branch
-$githubUsername = "pavansirasanambedu"
-$repositoryName = "common-encrypt-decrypt"
-$targetBranchName = "decrypt/appkeys"  # The branch where you want to create/update the file
-$targetFilePath = "decrypt/decrypt-appkeys.json"  # Replace with the actual file path in the target branch
-
-$gittoken = $env:token
-# Define your GitHub personal access token
-$githubToken = $gittoken
-
-# Encode the decrypted content as base64
-$base64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
-
-# Define the API URL to create/update the file in the target branch
-$apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath
-
-# Create a JSON body for the API request
-$requestBody = @{
-    "branch" = $targetBranchName
-    "message" = "Update Decrypted Data"
-    "content" = $base64Content
-} | ConvertTo-Json
-
-# Set the request headers with your personal access token
-$headers = @{
-    Authorization = "Bearer $gittoken"
-    "Content-Type" = "application/json"
-}
-
-try {
-    # Make a PUT request to create/update the file in the target branch
-    Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-
-    Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
-}
-catch {
-    Write-Host "An error occurred: $_"
-}
