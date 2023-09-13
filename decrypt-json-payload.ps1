@@ -12,11 +12,13 @@ Write-Host "fieldsToDecrypt: $fieldsToDecrypt"
 try {
     # Parse and display the file content (in this case, it's assumed to be JSON)
     $jsonContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
-
+    Write-Host "jsonContent: $jsonContent"
     Write-Host "Entered into TRY...!"
 
     # Parse the JSON content into a PowerShell object
     $jsonObject = $jsonContent | ConvertFrom-Json
+
+    Write-Host "jsonObject: $jsonObject"
 
     # Convert the modified JSON data back to a PowerShell object
     $encryptedJsonData = $jsonContent | ConvertFrom-Json
