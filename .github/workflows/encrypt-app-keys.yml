@@ -43,12 +43,7 @@ jobs:
           $env:sourcepath = "encrypt/encrypt-appkeys.json"
 
           # Split the comma-separated string into an array
-          $fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT -split ","
-
-          #  @($env:consumerkey, $env:secretkey)
-
-          $env:consumerkey = "consumerKey"
-          $env:secretkey = "consumerSecret"
+          $env:fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT -split ","
           
           Invoke-Pester ./encrypt-app-keys.ps1 -Passthru
 
