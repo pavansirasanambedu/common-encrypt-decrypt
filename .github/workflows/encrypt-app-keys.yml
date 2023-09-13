@@ -54,7 +54,7 @@ jobs:
 
       - name: Add local files to Git local branch
         run: |
-            git config --global user.email "rajeshjanapati533@gmail.com"
+            git config --global user.email "pavan.sirasanambedu@gmail.com"
             git config --global user.name "pavansirasanambedu"
             git add .
 
