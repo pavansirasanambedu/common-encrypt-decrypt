@@ -2,6 +2,8 @@
 $git_token = $env:token
 $fileContent = $env:jsonInput
 
+Write-Host "fileContent: $fileContent"
+
 # Specify the fields you want to decrypt
 $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
 
