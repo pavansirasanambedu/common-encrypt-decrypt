@@ -41,7 +41,7 @@ jobs:
           $env:key = "${{ secrets.key }}"
           $env:sourcepath = "encrypt/encrypt-appkeys.json"
 
-          $env:fieldsToEncrypt = {"consumerKey", "consumerSecret"}
+          $env:fieldsToEncrypt = ("consumerKey", "consumerSecret")
 
           #  @($env:consumerkey, $env:secretkey)
 
