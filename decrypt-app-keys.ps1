@@ -61,7 +61,6 @@ try {
             $encryptedJsonData.credentials[0].$field = $decryptedText
         }
     }
-    }
 
     # Display the JSON object with decrypted values
     $decrypteddata = $encryptedJsonData | ConvertTo-Json -Depth 10
@@ -134,3 +133,7 @@ try {
             Write-Host "An error occurred while creating the file: $_"
         }
     }
+}
+catch {
+    Write-Host "An error occurred: $_"
+}
