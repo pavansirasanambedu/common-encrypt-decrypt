@@ -22,6 +22,12 @@ $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
 # Loop through the specified fields and encrypt their values
 foreach ($field in $fieldsToEncrypt) {
+    # Output the value of $field for debugging
+    Write-Host "Field to process: $field"
+    
+    # Access the value of the current field
+    $plaintext = $appdetailget.credentials[0].$field
+
     # Check if the credentials array exists and has at least one item
     if ($appdetailget.credentials.Count -gt 0) {
         Write-Host "Field: $field"
