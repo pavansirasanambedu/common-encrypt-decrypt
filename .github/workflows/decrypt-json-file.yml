@@ -1,0 +1,55 @@
+name: Decrypt Json File Data
+
+on:
+  workflow_dispatch:
+
+env:
+
+  DEPLOYMENT_NAME: Decrypt App Keys # TODO: update to deployment name
+  
+  key: ${{ secrets.key }}
+
+
+ 
+
+jobs:
+
+  apigee-window-artifacts:
+
+    name: Decrypt Json File Data
+
+    runs-on: ubuntu-latest
+
+ 
+
+    permissions:
+
+      contents: 'read'
+
+      id-token: 'write'
+
+ 
+
+    steps:
+
+      - name: Check out repository code
+
+        uses: actions/checkout@v3
+
+        with:
+
+          persist-credentials: false
+
+          fetch-depth: 0
+
+ 
+
+      - name: Decrypt Json File Data
+
+        shell: pwsh
+
+        run: |
+          $env:token = "${{ secrets.GIT_TOKEN }}"
+          $env:key = "${{ secrets.key }}"
+
+          Invoke-Pester ./decrypt-json-file.ps1 -Passthru
