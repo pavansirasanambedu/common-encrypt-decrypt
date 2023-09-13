@@ -44,6 +44,6 @@ jobs:
           $env:targetBranchName = "decrypt/appkeys" 
           $env:targetFilePath = "decrypt/decrypt-appkeys.json" 
 
-          $env:fieldsToDecrypt = @("consumerKey", "consumerSecret")
+          $env:fieldsToDecrypt = "@("consumerKey", "consumerSecret")"
           
           Invoke-Pester ./decrypt-app-keys.ps1 -Passthru
