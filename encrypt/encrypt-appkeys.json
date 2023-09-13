@@ -1,31 +1,37 @@
 {
-  "appId": "c86938d7-07fe-49ff-8714-8960357e57d7",
-  "callbackUrl": "http://weatherapp.com",
-  "createdAt": "1694199318145",
+  "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
+  "attributes": [
+    {
+      "name": "developer-test-app",
+      "value": "developer app"
+    }
+  ],
+  "createdAt": "1694199580434",
   "credentials": [
     {
-      "apiProducts": [
-        {
-          "apiproduct": "weatherProduct",
-          "status": "approved"
-        }
-      ],
       "consumerKey": {
-        "EncryptedValue": "KkOki8BTgcS/QzE0DBTnnfjqAgV8KrzxCojJWoI7NxAK5lUdSbHStFWrIJpfGwJQyvhjQH86DzKZe7sFLW51jA==",
-        "IV": "9EPyvIdAU+EGvtKfZMphIA=="
+        "IV": "IdYP2bwnMYlRhJs5RdWwOQ==",
+        "EncryptedValue": "grjVOV2ggo+Zto5Gg6h8VD+ezrPnsrXH06coqpeECEwUYkycnPl/00k2p6aLTQK49w/mw7dSTQwRxNbjIS/Ouw=="
       },
       "consumerSecret": {
-        "EncryptedValue": "4WYc/TzwmYqgr3sW9p4WTOGT/cTbTaA0BB9L0MzWF3RtQXohOfc/PeNmwg8w3zlGnGZd0zqfHRp0QvDidCKaBZUecxgEt979AXIMG7ZFjBc=",
-        "IV": "NIJAxMP7Cj8Evgwy/TpDCw=="
+        "IV": "bXk41zif2vLeGfbrOrBhTA==",
+        "EncryptedValue": "ryGmMmcu/BxmX9I5DyYbcYAXOUz7TAuh4ye2BOiMkhg6jQxz+6qN7/T2I8v7AMxm4bjH/gpfD1g1NAzjY2oDtpP8rXC+rpYaidqAXGxPlcQ="
       },
       "expiresAt": "-1",
-      "issuedAt": "1694199318167",
+      "issuedAt": "1694199580447",
+      "status": "approved"
+    },
+    {
+      "consumerKey": "test153",
+      "consumerSecret": "6Wr30X2JASQew2htest",
+      "expiresAt": "1694199760844",
+      "issuedAt": "1694199580844",
       "status": "approved"
     }
   ],
-  "developerId": "b9d16493-f013-415e-93c5-b0f210b41abb",
-  "lastModifiedAt": "1694456393979",
-  "name": "app",
+  "developerId": "8770a62a-791d-4ba3-9502-ac5bde4f84ff",
+  "lastModifiedAt": "1694199580434",
+  "name": "developer-test-app",
   "status": "approved",
   "appFamily": "default"
 }
