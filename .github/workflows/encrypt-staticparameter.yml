@@ -1,14 +1,14 @@
 name: AES Encrypt Plain Text
+
 on:
   workflow_dispatch:
 
 env:
-  DEPLOYMENT_NAME: AES Encrypt Plain Text # TODO: update to deployment name
-  github_token: ${{ secrets.GITHUB_TOKEN }}
+  DEPLOYMENT_NAME: AES Encrypt Plain Text
   key: ${{ secrets.key }}
 
 jobs:
-  apigee-window-artifacts:
+  AES-Encrypt-Plain-Text:
     name: AES Encrypt Plain Text
     runs-on: ubuntu-latest
 
@@ -20,16 +20,14 @@ jobs:
       - name: Check out Git repository code
         uses: actions/checkout@v3
         with:
-          persist-credentials: false
           fetch-depth: 0
+          token: "${{ secrets.GIT_TOKEN }}"
 
-      - name: AES Encrypt & Decrypt
+      - name: AES Encrypt Plain Text
         shell: pwsh
         run: |
           $env:key = "${{ secrets.key }}"
-          $env:github_token: "${{ secrets.TOKEN_GIT }}"
           Invoke-Pester ./encrypt-staticparameter.ps1 -Passthru
-
 
       - name: Debug Git Config
         run: |
@@ -63,8 +61,5 @@ jobs:
           git status
 
       - name: Push changes to Git
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GIT_TOKEN }}
-          branch: encrypt/plaintext
-          
+        run: |
+          git push origin encrypt/plaintext
