@@ -6,9 +6,7 @@ on: push
 env:
   DEPLOYMENT_NAME: Encrypt App Keys
   key: ${{ secrets.key }}
-  fieldsToEncrypt:
-    - "consumerKey"
-    - "consumerSecret"
+  FIELDS_TO_ENCRYPT: "consumerKey,consumerSecret"
 
 
 jobs:
@@ -44,8 +42,8 @@ jobs:
           $env:key = "${{ secrets.key }}"
           $env:sourcepath = "encrypt/encrypt-appkeys.json"
 
-          # Split the fieldsToEncrypt environment variable into an array
-          $env:fieldsToEncrypt = $env:fieldsToEncrypt
+          # Split the comma-separated string into an array
+          $fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT -split ","
 
           #  @($env:consumerkey, $env:secretkey)
 
