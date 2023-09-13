@@ -11,6 +11,13 @@ $fieldsToEncrypt = $env:fieldsToEncrypt
 
 Write-Host "FieldsToEncrypt: $fieldsToEncrypt"
 
+Write-Host "Credentials Array: $($appdetailget.credentials | ConvertTo-Json -Depth 2)"
+Write-Host "First Item in Credentials: $($appdetailget.credentials[0] | ConvertTo-Json -Depth 2)"
+
+$plaintext = $appdetailget.credentials[0].consumerKey
+Write-Host "PlainText (consumerKey): $plaintext"
+
+
 # Encryption key
 $keyHex = $env:key  # Replace with your encryption key
 
