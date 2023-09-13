@@ -55,20 +55,6 @@ jobs:
 
  
 
-      # Configure Workload Identity Federation and generate an access token.
-
-      - id: 'auth'
-
-        name: 'Authenticate to Google Apigee Cloud'
-
-        uses: 'google-github-actions/auth@v1'
-
-        with:
-
-          token_format: 'access_token'
-          workload_identity_provider: '${{ secrets.WORKFLOW_IDENTITY_FEDERATION_NAME }}'
-          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
-
       - name: Decrept Keys
 
         shell: pwsh
@@ -76,9 +62,7 @@ jobs:
         run: |
 
           $env:ORG = "${{ secrets.APIGEE_ORG }}"
-
-          $env:TOKEN = "${{ steps.auth.outputs.access_token }}"
-          $env:GIT_TOKEN = "${{ secrets.GIT_TOKEN }}"
+          $env:token = "${{ secrets.GIT_TOKEN }}"
           $env:key = "${{ secrets.key }}"
 
           Invoke-Pester ./decrypt-app-keys.ps1 -Passthru
