@@ -4,7 +4,7 @@ try {
     $githubUsername = "pavansirasanambedu"
     $repositoryName = "common-encrypt-decrypt"
     $branchName = "encrypt/jsonfile"
-    $filePath = "encrypt-jsonfile/encrypt.json"
+    $filePath = "jsonfile/appdata.json"
 
     $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$filePath+"?ref="+$branchName
 
@@ -61,17 +61,11 @@ try {
     # Display the modified JSON data
     Write-Host $encryptedJsonData
 
-    # # Define the local file path and file name
-    # $filePath = "decrypt-jsonfile/decrypt-jsondata.json"
-
-    # # Write the JSON data to the file
-    # $encryptedJsonData | Set-Content -Path $filePath -Encoding UTF8
-
     # Define your GitHub username, repository names, branch names, and file paths
     $githubUsername = "pavansirasanambedu"
     $repositoryName = "common-encrypt-decrypt"
     $sourceBranchName = "encrypt/jsonfile"  # Source branch where you want to update the file
-    $targetFilePath = "decrypt-jsonfile/decrypt-jsondata.json"  # File path in the source branch
+    $targetFilePath = "encrypt-jsonfile/encrypt-jsondata.json"  # File path in the source branch
 
     # Define your GitHub personal access token
     $githubToken = $git_token  # Replace with your GitHub token
