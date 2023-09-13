@@ -5,7 +5,7 @@ $headers = @{Authorization = "Bearer $token"}
 $appdetailget = Invoke-RestMethod -Uri "https://apigee.googleapis.com/v1/organizations/esi-apigee-x-394004/developers/test.developer@gmail.com/apps/developer-test-app" -Method 'GET' -Headers $headers
 
 # Specify the fields you want to encrypt
-$fieldsToEncrypt = @("consumerKey", "consumerSecret")
+$fieldsToEncrypt = @($env:consumerkey, $env:secretkey)
 
 # Encryption key
 $keyHex = $env:key  # Replace with your encryption key
@@ -49,7 +49,7 @@ $encryptedJsonData = $appdetailget | ConvertTo-Json -Depth 10
 Write-Host $encryptedJsonData
 
 # Define the local file path and file name
-$filePath = "encrypt/encrypt-appkeys.json"
+$filePath = $env:sourcepath
 
 # Write the JSON data to the file
 $encryptedJsonData | Set-Content -Path $filePath -Encoding UTF8
