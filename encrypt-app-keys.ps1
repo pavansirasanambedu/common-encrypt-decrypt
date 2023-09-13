@@ -22,6 +22,9 @@ $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 foreach ($field in $fieldsToEncrypt) {
     # Check if the credentials array exists and has at least one item
     if ($appdetailget.credentials.Count -gt 0) {
+        Write-Host "Field: $field"
+        Write-Host "Plain Text: $plaintext"
+
         $plaintext = $appdetailget.credentials[0].$field
 
         # Convert plaintext to bytes (UTF-8 encoding)
