@@ -1,10 +1,10 @@
 try {
     $git_token = $env:token
 
-    $githubUsername = "pavansirasanambedu"
-    $repositoryName = "common-encrypt-decrypt"
-    $branchName = "encrypt/jsonfile"
-    $filePath = "jsonfile/appdata.json"
+    $githubUsername = $env:sourcegithubUsername
+    $repositoryName = $env:sourcerepositoryName
+    $branchName = $env:sourcebranchName
+    $filePath = $env:sourcefilePath
 
     $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$filePath+"?ref="+$branchName
 
@@ -62,10 +62,10 @@ try {
     Write-Host $encryptedJsonData
 
     # Define your GitHub username, repository names, branch names, and file paths
-    $githubUsername = "pavansirasanambedu"
-    $repositoryName = "common-encrypt-decrypt"
-    $sourceBranchName = "encrypt/jsonfile"  # Source branch where you want to update the file
-    $targetFilePath = "encrypt-jsonfile/encrypt-jsondata.json"  # File path in the source branch
+    $githubUsername = $env:targetgithubUsername
+    $repositoryName = $env:targetrepositoryName
+    $sourceBranchName = $env:targetBranchName
+    $targetFilePath = $env:targetFilePath
 
     # Define your GitHub personal access token
     $githubToken = $git_token  # Replace with your GitHub token
