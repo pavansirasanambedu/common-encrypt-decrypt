@@ -19,6 +19,8 @@ try {
     # Convert the modified JSON data back to a PowerShell object
     $encryptedJsonData = $jsonContent | ConvertFrom-Json
 
+    Write-Host $encryptedJsonData
+
     # Specify the fields you want to encrypt
     $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
 
