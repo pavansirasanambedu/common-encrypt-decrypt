@@ -1,11 +1,12 @@
 name: Decrypt Json Payload
 
-on:
+on: 
   workflow_dispatch:
 
 env:
-  DEPLOYMENT_NAME: Encrypt Json Payload
+  DEPLOYMENT_NAME: Decrypt Json Payload
   key: ${{ secrets.key }}
+  FIELDS_TO_ENCRYPT: "consumerKey,consumerSecret"
   JSON_DATA: |
     {
       "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
@@ -18,8 +19,14 @@ env:
       "createdAt": "1694199580434",
       "credentials": [
         {
-          "consumerKey": "8RTg8AsdwpOgk3792d8A7LHgKxyKDGt1s4y3G7iNuOeYZrTb",
-          "consumerSecret": "y25ueTdsKPQaHhZ4Ru9wcORo9YItaGLSRoEgneLBBoTCtprLKEVEQTUSGqU2thTE",
+          "consumerKey": {
+            "EncryptedValue": "daIwEBCWL0dXm+aFzGjdYvywspmfj8K2Ukdq4UBUSZbLROVhA7JjSYZa8OkFbl90Bco11dqpjTtzjLu0LGsKHw==",
+            "IV": "X+Pk6taWIydevcgAtDvi0g=="
+          },
+          "consumerSecret": {
+            "EncryptedValue": "a6NKCf1TCza/p074NbP1QpqG9YLiQjysnk+CDE2GsCM58Ti98IIFXDU7gN8nyA6YzHpjUDx2wAFIzt1HeM/DKyiRIvD05KqjHLYww6FcauM=",
+            "IV": "VSweQbGAEqPBXXNdBas3gA=="
+          },
           "expiresAt": "-1",
           "issuedAt": "1694199580447",
           "status": "approved"
@@ -61,9 +68,17 @@ jobs:
           $env:ORG = "${{ secrets.APIGEE_ORG }}"
           $env:TOKEN = "${{ steps.auth.outputs.access_token }}"
           $env:key = "${{ secrets.key }}"
+          $env:fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT
           
           # Pass the JSON_DATA environment variable as input to your script
           $jsonInput = $env:JSON_DATA | ConvertFrom-Json
-          $jsonInput | ConvertTo-Json | Set-Content -Path "json-input-file.json"
+          $jsonInput | Set-Content -Path "json-input-file.json"
+
+          # Define your GitHub username, repository names, branch names, and file paths
+          $env:targetgithubUsername = "pavansirasanambedu"
+          $env:repositoryName = "common-encrypt-decrypt"
+          $env:targetBranchName = "decrypt/jsonpayload"
+          $env:targetFilePath = "decrypt-jsonpaload/decrypt-jsonpaload.json"
           
+          # Run your script with Pester
           Invoke-Pester ./decrypt-json-payload.ps1 -Passthru
