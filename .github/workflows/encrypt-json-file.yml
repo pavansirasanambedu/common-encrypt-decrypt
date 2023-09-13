@@ -27,7 +27,7 @@ jobs:
         shell: pwsh
         run: |
           $env:key = "${{ secrets.key }}"
-          Invoke-Pester ./encrypt-json-file.ps1 -Passthru
+          Invoke-Pester ./encrypt-json-file.ps1.ps1 -Passthru
 
       - name: Debug Git Config
         run: |
