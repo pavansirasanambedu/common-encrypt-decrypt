@@ -100,7 +100,7 @@ catch {
 
 # Create a JSON body for the API request
 $requestBody = @{
-    "branch" = $sourceBranchName
+    "branch" = $targetBranchName  # Corrected variable name
     "message" = "Update Decrypted Data"
     "content" = $updatedContentBase64  # Use the base64-encoded content
     "sha" = $sha  # Include the current SHA
@@ -111,7 +111,7 @@ if ($fileExists) {
     # File already exists, make a PUT request to update it
     try {
         Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $sourceBranchName."
+        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
     }
     catch {
         Write-Host "An error occurred while updating the file: $_"
@@ -122,15 +122,10 @@ else {
     # File doesn't exist, make a POST request to create it
     try {
         Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-        Write-Host "Decrypted data has been successfully created in $targetFilePath in branch $sourceBranchName."
+        Write-Host "Decrypted data has been successfully created in $targetFilePath in branch $targetBranchName."
     }
     catch {
         Write-Host "An error occurred while creating the file: $_"
         exit 1  # Exit the script with an error code
     }
-}
-}
-catch {
-Write-Host "An error occurred: $_"
-exit 1  # Exit the script with an error code
 }
