@@ -69,10 +69,11 @@ jobs:
           $env:TOKEN = "${{ steps.auth.outputs.access_token }}"
           $env:key = "${{ secrets.key }}"
           $env:fieldsToDecrypt = $env:FIELDS_TO_DECRYPT
+          $env:jsonInput = $env:JSON_DATA
           
-          # Pass the JSON_DATA environment variable as input to your script
-          $env:jsonInput = $env:JSON_DATA | ConvertFrom-Json
-          $env:jsonInput | Set-Content -Path "json-input-file.json"
+          # # Pass the JSON_DATA environment variable as input to your script
+          # $env:jsonInput = $env:JSON_DATA | ConvertFrom-Json
+          # $env:jsonInput | Set-Content -Path "json-input-file.json"
 
           # Define your GitHub username, repository names, branch names, and file paths
           $env:targetgithubUsername = "pavansirasanambedu"
