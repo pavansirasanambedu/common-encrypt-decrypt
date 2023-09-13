@@ -1,6 +1,9 @@
 # Define the encryption key
 $keyHex = $env:key  # Replace with your encryption key
 
+# Define the git token
+$gittoken = $env:github_token  # Replace with your git token
+
 # Create a new AES object with the specified key and AES mode
 $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
 $AES.KeySize = 256  # Set the key size to 256 bits for AES-256
