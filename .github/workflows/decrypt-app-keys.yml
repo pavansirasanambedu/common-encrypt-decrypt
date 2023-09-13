@@ -1,25 +1,14 @@
-name: Decrypt
+name: Decrypt App Keys
 
 on:
   workflow_dispatch:
 
 env:
 
-  DEPLOYMENT_NAME: Encrypt keys to GitHub # TODO: update to deployment name
-
-  # Default Target Apigee Organization et environment (can be also be dynamically defined in [Set Variables *] steps)
-
-  APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
-
-  APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
-
-  GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-
-  WORKFLOW_IDENTITY_FEDERATION_NAME: ${{ secrets.WORKFLOW_IDENTITY_FEDERATION_NAME }}
-
+  DEPLOYMENT_NAME: Decrypt App Keys # TODO: update to deployment name
+  
   key: ${{ secrets.key }}
 
-  APIGEE_BASE_URL: "https://apigee.googleapis.com/v1/organizations/"
 
  
 
@@ -27,7 +16,7 @@ jobs:
 
   apigee-window-artifacts:
 
-    name: Decrypt Keys
+    name: Decrypt App Keys
 
     runs-on: ubuntu-latest
 
@@ -55,13 +44,11 @@ jobs:
 
  
 
-      - name: Decrept Keys
+      - name: Decrypt App Keys
 
         shell: pwsh
 
         run: |
-
-          $env:ORG = "${{ secrets.APIGEE_ORG }}"
           $env:token = "${{ secrets.GIT_TOKEN }}"
           $env:key = "${{ secrets.key }}"
 
