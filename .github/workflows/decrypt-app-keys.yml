@@ -30,6 +30,17 @@ jobs:
           $env:key = "${{ secrets.key }}"
           Invoke-Pester ./decrypt-app-keys.ps1 -Passthru
 
+      - name: Set Git identity
+        run: |
+          git config --global user.email "rajeshjanapati533@gmail.com"
+          git config --global user.name "pavansirasanambedu"
+
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
       # - name: Debug Git Config
       #   run: |
       #     git config --list
