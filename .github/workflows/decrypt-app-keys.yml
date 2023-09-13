@@ -64,4 +64,4 @@ jobs:
       - name: Push changes to Git
         run: |
           # Push to the sub-branch "decrypt/appkeys"
-          git push origin pavansirasanambedu/common-encrypt-decrypt:ref:refs/heads/decrypt/appkeys
+          git push origin master:refs/heads/decrypt/appkeys
