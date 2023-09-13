@@ -68,3 +68,42 @@ foreach ($field in $fieldsToDecrypt) {
 $decrypteddata = $encryptedJsonData | ConvertTo-Json -Depth 10
 
 Write-Host $decrypteddata
+
+# Define your GitHub username, repository name, target branch name, and file path in the target branch
+$githubUsername = "pavansirasanambedu"
+$repositoryName = "common-encrypt-decrypt"
+$targetBranchName = "decrypt/appkeys"  # The branch where you want to create/update the file
+$targetFilePath = "decrypt/decrypt-appkeys.json"  # Replace with the actual file path in the target branch
+
+# Define your GitHub personal access token
+$githubToken = $git_token
+
+# Encode the decrypted content as base64
+$base64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata)
+
+# Define the API URL to create/update the file in the target branch
+$apiUrl = "https://api.github.com/repos/$githubUsername/$repositoryName/contents/$targetFilePath"
+
+# Create a JSON body for the API request
+$requestBody = @{
+    "branch" = $targetBranchName
+    "message" = "Update Decrypted Data"
+    "content" = $base64Content
+} | ConvertTo-Json
+
+# Set the request headers with your personal access token
+$headers = @{
+    Authorization = "Bearer $githubToken"
+    "Content-Type" = "application/json"
+}
+
+try {
+    # Make a PUT request to create/update the file in the target branch
+    Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+
+    Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
+}
+catch {
+    Write-Host "An error occurred: $_"
+}
+
