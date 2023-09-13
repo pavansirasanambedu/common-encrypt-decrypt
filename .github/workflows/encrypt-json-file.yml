@@ -62,4 +62,4 @@ jobs:
 
       - name: Push changes to Git
         run: |
-          git push origin decrypt/jsonfile
+          git push origin encrypt/jsonfile
