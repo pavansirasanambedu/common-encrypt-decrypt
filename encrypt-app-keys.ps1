@@ -5,7 +5,9 @@ $headers = @{Authorization = "Bearer $token"}
 $appdetailget = Invoke-RestMethod -Uri "https://apigee.googleapis.com/v1/organizations/esi-apigee-x-394004/developers/test.developer@gmail.com/apps/developer-test-app" -Method 'GET' -Headers $headers
 
 # Specify the fields you want to encrypt
-$fieldsToEncrypt = @($env:consumerkey, $env:secretkey)
+$fieldsToEncrypt = @($env:fieldsToEncrypt)
+
+Write-Host $fieldsToEncrypt
 
 # Encryption key
 $keyHex = $env:key  # Replace with your encryption key

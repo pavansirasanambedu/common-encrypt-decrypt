@@ -40,6 +40,11 @@ jobs:
           $env:TOKEN = "${{ steps.auth.outputs.access_token }}"
           $env:key = "${{ secrets.key }}"
           $env:sourcepath = "encrypt/encrypt-appkeys.json"
+
+          $env:fieldsToEncrypt = {"consumerKey", "consumerSecret"}
+
+          #  @($env:consumerkey, $env:secretkey)
+
           $env:consumerkey = "consumerKey"
           $env:secretkey = "consumerSecret"
           
