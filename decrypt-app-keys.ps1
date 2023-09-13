@@ -81,7 +81,7 @@ $targetBranchName = "decrypt/appkeys"  # The branch where you want to create/upd
 $targetFilePath = "decrypt/decrypt-appkeys.json"  # Replace with the actual file path in the target branch
 
 # Define your GitHub personal access token
-$githubToken = $git_token
+$githubToken = $env:token
 
 # Encode the decrypted content as base64
 $base64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
@@ -95,7 +95,6 @@ $headers = @{
     "Content-Type" = "application/json"
 }
 
-
 # Check if the file already exists in the repository and fetch its current SHA
 $fileExists = $false
 $sha = $null
@@ -103,36 +102,57 @@ try {
     $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
     $fileExists = $true
     $sha = $fileContent.sha
-
     # Decode the current content from base64
     $currentContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
 }
 catch {
     # The file doesn't exist
+    $currentContent = $null
 }
 
-# Check if the content is different from the current content
-$updatedBase64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
-if ($currentContent -ne $null -and $updatedBase64Content -ne $currentContent) {
-    # Fetch the latest changes from the target branch
-    git fetch origin $targetBranchName
+# Update the content only if it's different from the current content
+if ($currentContent -ne $null -and $decrypteddata -ne $currentContent) {
+    # Encode the updated content as base64
+    $updatedBase64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
 
-    # Create a new branch for merging the changes
-    git checkout -b merge-branch origin/$targetBranchName
+    # Create a JSON body for the API request with the updated content and SHA
+    $requestBody = @{
+        "branch" = $targetBranchName
+        "message" = "Update Decrypted Data"
+        "content" = $updatedBase64Content
+        "sha" = $sha  # Include the current SHA
+    } | ConvertTo-Json
 
-    # Merge the changes from the current branch into the merge-branch
-    git merge HEAD origin/$branchName
+    try {
+        # Make a PUT request to update the file with the new content
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while updating the file: $_"
+    }
+}
+elseif ($currentContent -eq $null) {
+    # File doesn't exist, create a new one
+    try {
+        # Use the updated content to create a new file
+        $requestBody = @{
+            "branch" = $targetBranchName
+            "message" = "Create Decrypted Data"
+            "content" = $base64Content  # Use the base64-encoded content
+        } | ConvertTo-Json
 
-    # Apply your updates
-    echo $decrypteddata | Set-Content -Path $targetFilePath -Encoding UTF8
+        # Make a POST request to create the file
+        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
 
-    # Commit the changes
-    git commit -am "Merge and update decrypted data"
-
-    # Push the changes to the target branch
-    git push origin merge-branch:$targetBranchName
-
-    Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
+        Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
+    }
+    catch {
+        Write-Host "An error occurred while creating the file: $_"
+    }
+}
+else {
+    Write-Host "No changes detected in the content. File not updated."
 }
 
 
