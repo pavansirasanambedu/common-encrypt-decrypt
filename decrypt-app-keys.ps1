@@ -69,12 +69,7 @@ $decrypteddata = $encryptedJsonData | ConvertTo-Json -Depth 10
 
 Write-Host $decrypteddata
 
-# $targetFilePath = "decrypt/decrypt-appkeys.json"
-
-# # Write the JSON data to the file
-# $decrypteddata | Set-Content -Path $targetFilePath -Encoding UTF8
-
-# Define your GitHub username, repository names, branch name, and file path
+# Define your GitHub username, repository names, branch names, and file paths
 $githubUsername = "pavansirasanambedu"
 $repositoryName = "common-encrypt-decrypt"
 $sourceBranchName = "decrypt/appkeys"  # Source branch where you want to update the file
@@ -109,9 +104,9 @@ catch {
 
 # Create a JSON body for the API request
 $requestBody = @{
-    "branch" = $targetBranchName
+    "branch" = $sourceBranchName
     "message" = "Update Decrypted Data"
-    "content" = $base64Content  # Use the base64-encoded content
+    "content" = $updatedContentBase64  # Use the base64-encoded content
     "sha" = $sha  # Include the current SHA
 } | ConvertTo-Json
 
@@ -121,7 +116,7 @@ if ($fileExists) {
     try {
         Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
 
-        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
+        Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $sourceBranchName."
     }
     catch {
         Write-Host "An error occurred while updating the file: $_"
@@ -130,9 +125,9 @@ if ($fileExists) {
 else {
     # File doesn't exist, make a POST request to create it
     try {
-        Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
+        Invoke-RestMethod -Uri "https://api.github.com/repos/$githubUsername/$repositoryName/contents/$targetFilePath" -Headers $headers -Method POST -Body $requestBody
 
-        Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $targetBranchName."
+        Write-Host "Decrypted data has been successfully written to $targetFilePath in branch $sourceBranchName."
     }
     catch {
         Write-Host "An error occurred while creating the file: $_"
