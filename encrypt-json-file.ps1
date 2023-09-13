@@ -61,7 +61,7 @@ $encryptedJsonData = $appdetailget | ConvertTo-Json -Depth 10
 Write-Host $encryptedJsonData
 
 # Define the local file path and file name
-$filePath = "decrypt-jsonfile/decrypt-jsonfiledata.json"
+$filePath = "decrypt-jsonfile/decrypt-jsondata.json"
 
 # Write the JSON data to the file
 $encryptedJsonData | Set-Content -Path $filePath -Encoding UTF8
