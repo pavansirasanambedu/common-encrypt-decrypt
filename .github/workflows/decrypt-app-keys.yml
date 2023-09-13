@@ -87,4 +87,4 @@ jobs:
 
       - name: Push changes to Git
         run: |
-          git push origin encrypt/appkeys
+          git push origin decrypt/appkeys
