@@ -63,7 +63,7 @@ $githubToken = $gittoken
 $base64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($decrypteddata))
 
 # Define the API URL to create/update the file in the target branch
-$apiUrl = "https://api.github.com/repos/$githubUsername/$repositoryName/contents/$targetFilePath"
+$apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath
 
 # Create a JSON body for the API request
 $requestBody = @{
@@ -74,7 +74,7 @@ $requestBody = @{
 
 # Set the request headers with your personal access token
 $headers = @{
-    Authorization = "Bearer $githubToken"
+    Authorization = "Bearer $gittoken"
     "Content-Type" = "application/json"
 }
 
