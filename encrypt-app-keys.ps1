@@ -7,8 +7,6 @@ $appdetailget = Invoke-RestMethod -Uri "https://apigee.googleapis.com/v1/organiz
 # Specify the fields you want to encrypt
 $fieldsToEncrypt = $env:fieldsToEncrypt
 
-Write-Host "fieldsToEncrypt: $fieldsToEncrypt"
-
 # Encryption key
 $keyHex = $env:key  # Replace with your encryption key
 
@@ -22,8 +20,6 @@ $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 foreach ($field in $fieldsToEncrypt) {
     # Check if the credentials array exists and has at least one item
     if ($appdetailget.credentials.Count -gt 0) {
-        Write-Host "Field: $field"
-        Write-Host "Plain Text: $plaintext"
 
         $plaintext = $appdetailget.credentials[0].$field
 
