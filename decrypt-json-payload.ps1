@@ -6,7 +6,6 @@ Write-Host "fileContent: $fileContent"
 
 # Specify the fields you want to encrypt
 $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
-
 Write-Host "fieldsToDecrypt: $fieldsToDecrypt"
 
 try {
@@ -17,12 +16,10 @@ try {
 
     # Parse the JSON content into a PowerShell object
     $jsonObject = $jsonContent | ConvertFrom-Json
-
     Write-Host "jsonObject: $jsonObject"
 
     # Convert the modified JSON data back to a PowerShell object
     $encryptedJsonData = $jsonContent | ConvertFrom-Json
-
     Write-Host "encryptedJsonData: $encryptedJsonData"
 
     # Specify the fields you want to encrypt
@@ -40,25 +37,25 @@ try {
     # Loop through the specified fields and decrypt their values
     foreach ($field in $fieldsToDecrypt) {
         Write-Host "field: $field"
-    
+
         # Loop through credentials
         foreach ($credential in $encryptedJsonData.credentials) {
             Write-Host "entered into 2nd foreach...!"
             if ($credential.$field) {
                 $encryptedValueBase64 = $credential.$field.EncryptedValue
                 $IVBase64 = $credential.$field.IV
-    
+
                 # Convert IV and encrypted value to bytes
                 $IV = [System.Convert]::FromBase64String($IVBase64)
                 $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
-    
+
                 # Create a decryptor
                 $decryptor = $AES.CreateDecryptor($AES.Key, $IV)
-    
+
                 # Decrypt the data
                 $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
                 $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
-    
+
                 # Update the JSON object with the decrypted value
                 $credential.$field = $decryptedText
             }
@@ -67,7 +64,6 @@ try {
 
     # Display the JSON object with decrypted values
     $decrypteddata = $encryptedJsonData | ConvertTo-Json -Depth 10
-
     Write-Host "Decrypted Data:"
     Write-Host $decrypteddata
 
@@ -118,25 +114,26 @@ try {
         # File already exists, make a PUT request to update it
         try {
             Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-    
             Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $sourceBranchName."
         }
         catch {
             Write-Host "An error occurred while updating the file: $_"
+            exit 1  # Exit the script with an error code
         }
     }
     else {
         # File doesn't exist, make a POST request to create it
         try {
             Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-    
             Write-Host "Decrypted data has been successfully created in $targetFilePath in branch $sourceBranchName."
         }
         catch {
             Write-Host "An error occurred while creating the file: $_"
+            exit 1  # Exit the script with an error code
         }
     }
 }
 catch {
     Write-Host "An error occurred: $_"
+    exit 1  # Exit the script with an error code
 }
