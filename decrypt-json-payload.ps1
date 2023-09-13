@@ -70,6 +70,12 @@ $repositoryName = $env:repositoryName
 $targetBranchName = $env:targetBranchName
 $targetFilePath = $env:targetFilePath
 
+# # Define your GitHub username, repository names, branch names, and file paths
+#           $env:targetgithubUsername = "pavansirasanambedu"
+#           $env:repositoryName = "common-encrypt-decrypt"
+#           $env:targetBranchName = "decrypt/jsonpayload"
+#           $env:targetFilePath = "decrypt-jsonpaload/decrypt-jsonpaload.json"
+
 # Define your GitHub personal access token
 $githubToken = $git_token  # Replace with your GitHub token
 
