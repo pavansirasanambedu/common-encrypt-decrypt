@@ -78,18 +78,28 @@ $targetFilePath = "decrypt/decrypt-appkeys.json"  # Replace with the actual file
 # Define your GitHub personal access token
 $githubToken = $git_token
 
-# Encode the updated content as base64
-$base64Content = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($updatedContent))  # $updatedContent contains your updated JSON data
+# Fetch the latest content of the JSON file
+$apiUrlGet = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath+"?ref="+$targetBranchName
+$fileContent = Invoke-RestMethod $apiUrlGet -Headers @{
+    Authorization = "Bearer $githubToken"
+}
+
+# Merge your changes into the existing content and update the JSON object
+$mergedContent = $existingContent + $yourChanges  # Replace with your merged JSON content
+$mergedContentJson = $mergedContent | ConvertTo-Json -Depth 10
+
+# Calculate the SHA hash of the merged content
+$mergedContentSha = (Get-FileHash -Path $targetFilePath).Hash
 
 # Define the API URL to create/update the file in the target branch
-$apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath
+$apiUrlPut = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath
 
 # Create a JSON body for the API request
 $requestBody = @{
     "branch" = $targetBranchName
     "message" = "Update Decrypted Data"
-    "content" = $base64Content
-    "sha" = $existingSha  # The SHA of the existing file content
+    "content" = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($mergedContentJson))
+    "sha" = $mergedContentSha  # The SHA hash of the merged content
 } | ConvertTo-Json
 
 # Set the request headers with your personal access token
@@ -100,7 +110,7 @@ $headers = @{
 
 try {
     # Make a PUT request to update the file in the target branch
-    Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+    Invoke-RestMethod -Uri $apiUrlPut -Headers $headers -Method PUT -Body $requestBody
 
     Write-Host "Updated data has been successfully written to $targetFilePath in branch $targetBranchName."
 }
