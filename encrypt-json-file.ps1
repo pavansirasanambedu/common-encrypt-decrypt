@@ -19,6 +19,7 @@ try {
 
     # Specify the fields you want to encrypt
     $fieldsToEncrypt = @("consumerKey", "consumerSecret")
+    # $fieldsToEncrypt = @($env:fieldsToEncrypt)  #this is still pending and have to get field name dynamically from yml file.
 
     # Encryption key
     $keyHex = $env:key  # Replace with your encryption key
