@@ -1,55 +1,65 @@
-name: Decrypt Json File Data
+name: Encrypt json file data
 
 on:
   workflow_dispatch:
 
 env:
-
-  DEPLOYMENT_NAME: Decrypt App Keys # TODO: update to deployment name
-  
+  DEPLOYMENT_NAME: Encrypt json file data
   key: ${{ secrets.key }}
 
-
- 
-
 jobs:
-
   apigee-window-artifacts:
-
-    name: Decrypt Json File Data
-
+    name: Encrypt json file data
     runs-on: ubuntu-latest
 
- 
-
     permissions:
-
       contents: 'read'
-
       id-token: 'write'
 
- 
-
     steps:
-
-      - name: Check out repository code
-
+      - name: Check out Git repository code
         uses: actions/checkout@v3
-
         with:
-
-          persist-credentials: false
-
           fetch-depth: 0
+          token: "${{ secrets.GIT_TOKEN }}"
 
- 
-
-      - name: Decrypt Json File Data
-
+      - name: Encrypt App Keys
         shell: pwsh
-
         run: |
-          $env:token = "${{ secrets.GIT_TOKEN }}"
           $env:key = "${{ secrets.key }}"
+          Invoke-Pester ./encrypt-json-file.ps1 -Passthru
 
-          Invoke-Pester ./decrypt-json-file.ps1 -Passthru
+      - name: Debug Git Config
+        run: |
+          git config --list
+
+      - name: Add local files to Git local branch
+        run: |
+            git config --global user.email "rajeshjanapati533@gmail.com"
+            git config --global user.name "pavansirasanambedu"
+            git add .
+
+      - name: Check for delta changes - Git
+        id: check_git_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "Local branch is not up to date with remote_branch. Pushing latest code to Git"
+          else
+            echo "Local branch is up to date with Remote branch."
+            exit 0
+          fi
+
+      - name: Commit files to Git
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git commit -a -m "Apigee Artifacts Export Updates"
+            exit 0
+          fi
+
+      - name: Debug Git Status
+        run: |
+          git status
+
+      - name: Push changes to Git
+        run: |
+          git push origin decrypt/jsonfile
