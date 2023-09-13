@@ -1,7 +1,7 @@
 name: Encrypt App Keys
 
-on: 
-  workflow_dispatch:
+on: push
+  # workflow_dispatch:
 
 env:
   DEPLOYMENT_NAME: Encrypt App Keys
@@ -43,7 +43,7 @@ jobs:
           $env:sourcepath = "encrypt/encrypt-appkeys.json"
 
           # Split the comma-separated string into an array
-          $env:fieldsToEncrypt = FIELDS_TO_ENCRYPT
+          $env:fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT
           
           Invoke-Pester ./encrypt-app-keys.ps1 -Passthru
 
