@@ -95,7 +95,7 @@ try {
         try {
             Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
     
-            Write-Host "Decrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
+            Write-Host "Encrypted data has been successfully updated in $targetFilePath in branch $targetBranchName."
         }
         catch {
             Write-Host "An error occurred while updating the file: $_"
