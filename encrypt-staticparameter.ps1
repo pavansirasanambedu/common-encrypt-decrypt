@@ -1,37 +1,98 @@
-# Define the encryption key
-$keyHex = $env:key  # Replace with your encryption key
+try {
+    $git_token = $env:token
 
-# Define the git token
-# $gittoken = $env:github_token  # Replace with your git token
+    # Plain text to encrypt
+    $plainText = "Hello Pavan...!"
 
-# Create a new AES object with the specified key and AES mode
-$AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
-$AES.KeySize = 256  # Set the key size to 256 bits for AES-256
-$AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
-$AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
+    # Encryption key
+    $keyHex = $env:key
 
-# Specify the plain text to be encrypted
-$plainText = $env:value
+    $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
+    $AES.KeySize = 256
+    $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
+    $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
-Write-Host "plainText: $plainText"
+    # Convert plain text to bytes (UTF-8 encoding)
+    $plainTextBytes = [System.Text.Encoding]::UTF8.GetBytes($plainText)
 
-# Convert plaintext to bytes (UTF-8 encoding)
-$plainTextBytes = [System.Text.Encoding]::UTF8.GetBytes($plainText)
+    $AES.GenerateIV()
+    $IVBase64 = [System.Convert]::ToBase64String($AES.IV)
 
-# Generate a random initialization vector (IV)
-$AES.GenerateIV()
-$IVBase64 = [System.Convert]::ToBase64String($AES.IV)
+    # Encrypt the data
+    $encryptor = $AES.CreateEncryptor()
+    $encryptedBytes = $encryptor.TransformFinalBlock($plainTextBytes, 0, $plainTextBytes.Length)
+    $encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
 
-# Encrypt the data
-$encryptor = $AES.CreateEncryptor()
-$encryptedBytes = $encryptor.TransformFinalBlock($plainTextBytes, 0, $plainTextBytes.Length)
-$encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
+    # Define your GitHub username, repository names, branch names, and file paths
+    $githubUsername = $env:targetgithubUsername
+    $repositoryName = $env:targetrepositoryName
+    $sourceBranchName = $env:targetBranchName
+    $targetFilePath = $env:targetFilePath
 
-# Display the encrypted data
-Write-Host "Encrypted Text: $encryptedBase64"
+    # Define your GitHub personal access token
+    $githubToken = $git_token  # Replace with your GitHub token
 
-# Define the local file path and file name
-$filePath = "encrypt/encrypt-plaintext.json"
+    # Encode the content you want to update as base64
+    $updatedContent = @{
+        "EncryptedValue" = $encryptedBase64
+        "IV" = $IVBase64
+    } | ConvertTo-Json
 
-# Write the JSON data to the file
-$encryptedJsonData | Set-Content -Path $filePath -Encoding UTF8
+    $updatedContentBase64 = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($updatedContent))
+
+    # Define the API URL to fetch the file content from the source branch
+    $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath+"?ref="+$sourceBranchName
+
+    # Set the request headers with your personal access token
+    $headers = @{
+        Authorization = "Bearer $githubToken"
+        "Content-Type" = "application/json"
+    }
+
+    # Check if the file already exists in the repository and fetch its current SHA
+    $fileExists = $false
+    $sha = $null
+    try {
+        $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
+        $fileExists = $true
+        $sha = $fileContent.sha
+    }
+    catch {
+        # The file doesn't exist
+    }
+
+    # Create a JSON body for the API request
+    $requestBody = @{
+        "branch" = $sourceBranchName
+        "message" = "Update Encrypted Data"
+        "content" = $updatedContentBase64  # Use the base64-encoded content
+        "sha" = $sha  # Include the current SHA
+    } | ConvertTo-Json
+
+    # Determine whether to make a PUT or POST request based on whether the file exists
+    if ($fileExists) {
+        # File already exists, make a PUT request to update it
+        try {
+            Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+
+            Write-Host "Encrypted data has been successfully updated in $targetFilePath in branch $sourceBranchName."
+        }
+        catch {
+            Write-Host "An error occurred while updating the file: $_"
+        }
+    }
+    else {
+        # File doesn't exist, make a POST request to create it
+        try {
+            Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+
+            Write-Host "Encrypted data has been successfully created in $targetFilePath in branch $sourceBranchName."
+        }
+        catch {
+            Write-Host "An error occurred while creating the file: $_"
+        }
+    }
+}
+catch {
+    Write-Host "An error occurred: $_"
+}
