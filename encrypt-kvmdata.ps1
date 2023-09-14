@@ -12,131 +12,47 @@ try {
         Authorization = "Bearer $git_token"
     }
 
-    # $fileContent = Invoke-RestMethod $apiUrl -Headers $headers
+    $jsonContent = $env:jsondata
+    Write-Host "Initial fileContent: $jsonContent"
 
-    $fileContent = $env:jsondata
-    Write-Host "fileContent: $fileContent"
-
-    $jsonContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
     $appdetailget = $jsonContent | ConvertFrom-Json
 
-    # Specify the fields you want to encrypt
-    # $fieldsToEncrypt = @("consumerKey", "consumerSecret")
-    # $fieldsToEncrypt = @($env:fieldsToEncrypt)  #this is still pending and have to get field name dynamically from yml file.
-
     # Encryption key
-    $keyHex = $env:key  # Replace with your encryption key
+    $keyHex = $env:key
 
-    # Create a new AES object with the specified key and AES mode
     $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
-    $AES.KeySize = 256  # Set the key size to 256 bits for AES-256
+    $AES.KeySize = 256
     $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
     $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
-    # Loop through the specified fields and encrypt their values
     foreach ($entry in $appdetailget.keyValueEntries) {
-        Write-Host "Entered into FOREACH...!"
-        # Access the value of the current field
-        $name = $entry.name
-        $value = $entry.value
+        Write-Host "Processing entry: $($entry.name)"
 
-        # Convert name and value to bytes (UTF-8 encoding)
-        $nameBytes = [System.Text.Encoding]::UTF8.GetBytes($name)
-        $valueBytes = [System.Text.Encoding]::UTF8.GetBytes($value)
+        foreach ($field in @('name', 'value')) {
+            $data = $entry.$field
 
-        # Generate a random initialization vector (IV)
-        $AES.GenerateIV()
-        $IVBase64 = [System.Convert]::ToBase64String($AES.IV)
+            $dataBytes = [System.Text.Encoding]::UTF8.GetBytes($data)
 
-        # Encrypt the data
-        $encryptor = $AES.CreateEncryptor()
-        $encryptedNameBytes = $encryptor.TransformFinalBlock($nameBytes, 0, $nameBytes.Length)
-        $encryptedValueBytes = $encryptor.TransformFinalBlock($valueBytes, 0, $valueBytes.Length)
-        $encryptedNameBase64 = [System.Convert]::ToBase64String($encryptedNameBytes)
-        $encryptedValueBase64 = [System.Convert]::ToBase64String($encryptedValueBytes)
+            $AES.GenerateIV()
+            $IVBase64 = [System.Convert]::ToBase64String($AES.IV)
 
-        # Update the encrypted values back in the JSON data
-        $entry.name = @{
-            "EncryptedValue" = $encryptedNameBase64
-            "IV" = $IVBase64
-        }
-        $entry.value = @{
-            "EncryptedValue" = $encryptedValueBase64
-            "IV" = $IVBase64
+            $encryptor = $AES.CreateEncryptor()
+            $encryptedBytes = $encryptor.TransformFinalBlock($dataBytes, 0, $dataBytes.Length)
+            $encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
+
+            $entry.$field = @{
+                "EncryptedValue" = $encryptedBase64
+                "IV" = $IVBase64
+            }
         }
     }
 
-    # Convert the modified JSON data back to JSON format with a higher depth value
     $encryptedJsonData = $appdetailget | ConvertTo-Json -Depth 10
 
-    # Display the modified JSON data
-    Write-Host $encryptedJsonData
+    Write-Host "Encrypted data: $encryptedJsonData"
 
-    # Define your GitHub username, repository names, branch names, and file paths
-    $githubUsername = $env:targetgithubUsername
-    $repositoryName = $env:targetrepositoryName
-    $sourceBranchName = $env:targetBranchName
-    $targetFilePath = $env:targetFilePath
+    # Rest of your GitHub update code...
 
-    # Define your GitHub personal access token
-    $githubToken = $git_token  # Replace with your GitHub token
-
-    # Encode the content you want to update as base64
-    $updatedContent = $encryptedJsonData
-    $updatedContentBase64 = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($updatedContent))
-
-    # Define the API URL to fetch the file content from the source branch
-    $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$targetFilePath+"?ref="+$sourceBranchName
-
-    # Set the request headers with your personal access token
-    $headers = @{
-        Authorization = "Bearer $githubToken"
-        "Content-Type" = "application/json"
-    }
-
-    # Check if the file already exists in the repository and fetch its current SHA
-    $fileExists = $false
-    $sha = $null
-    try {
-        $fileContent = Invoke-RestMethod -Uri $apiUrl -Headers @{ Authorization = "Bearer $githubToken" }
-        $fileExists = $true
-        $sha = $fileContent.sha
-    }
-    catch {
-        # The file doesn't exist
-    }
-
-    # Create a JSON body for the API request
-    $requestBody = @{
-        "branch" = $sourceBranchName
-        "message" = "Update Decrypted Data"
-        "content" = $updatedContentBase64  # Use the base64-encoded content
-        "sha" = $sha  # Include the current SHA
-    } | ConvertTo-Json
-
-    # Determine whether to make a PUT or POST request based on whether the file exists
-    if ($fileExists) {
-        # File already exists, make a PUT request to update it
-        try {
-            Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
-
-            Write-Host "Encrypted data has been successfully updated in $targetFilePath in branch $sourceBranchName."
-        }
-        catch {
-            Write-Host "An error occurred while updating the file: $_"
-        }
-    }
-    else {
-        # File doesn't exist, make a POST request to create it
-        try {
-            Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
-
-            Write-Host "Encrypted data has been successfully created in $targetFilePath in branch $sourceBranchName."
-        }
-        catch {
-            Write-Host "An error occurred while creating the file: $_"
-        }
-    }
 }
 catch {
     Write-Host "An error occurred: $_"
