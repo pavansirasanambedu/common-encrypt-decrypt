@@ -9,6 +9,9 @@ try {
     # Encryption key
     $keyHex = $env:key
 
+    # Specify the fields you want to decrypt
+    $fieldsToEncrypt = $env:fieldsToEncrypt -split ","
+
     $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
     $AES.KeySize = 256
     $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
@@ -17,7 +20,7 @@ try {
     foreach ($entry in $appdetailget.keyValueEntries) {
         Write-Host "Processing entry: $($entry.name)"
 
-        foreach ($field in @('name', 'value')) {
+        foreach ($field in fieldsToEncrypt) {
             $data = $entry.$field
 
             $dataBytes = [System.Text.Encoding]::UTF8.GetBytes($data)
