@@ -1,7 +1,7 @@
 name: Encrypt KVM data
 
-on: push
-  # workflow_dispatch:
+on:
+  workflow_dispatch:
 
 env:
   DEPLOYMENT_NAME: Encrypt KVM data
@@ -44,16 +44,10 @@ jobs:
         run: |
           $env:token = "${{ secrets.GIT_TOKEN }}"
           $env:key = "${{ secrets.key }}"
-
-          $env:sourcegithubUsername = "pavansirasanambedu"
-          $env:sourcerepositoryName = "common-encrypt-decrypt"
-          $env:sourcebranchName = "encrypt/kvmdata"
-          $env:sourcefilePath = "kvmdata/kvmdata.json"
+          
           $env:fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT
 
           $env:jsondata = $env:JSON_DATA
-
-          # $env:fieldsToEncrypt = "["consumerKey", "consumerSecret"]" #this is still pending and have to get field name dynamically from yml file.
 
           $env:targetgithubUsername = "pavansirasanambedu"
           $env:targetrepositoryName = "common-encrypt-decrypt"
