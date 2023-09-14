@@ -1,17 +1,6 @@
 try {
     $git_token = $env:token
 
-    # $githubUsername = $env:sourcegithubUsername
-    # $repositoryName = $env:sourcerepositoryName
-    # $branchName = $env:sourcebranchName
-    # $filePath = $env:sourcefilePath
-
-    # $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$repositoryName+"/contents/"+$filePath+"?ref="+$branchName
-
-    # $headers = @{
-    #     Authorization = "Bearer $git_token"
-    # }
-
     $jsonContent = $env:jsondata
     
     Write-Host "Initial fileContent: $jsonContent"
