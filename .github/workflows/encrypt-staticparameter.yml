@@ -28,7 +28,8 @@ jobs:
         shell: pwsh
         run: |
           $env:key = "${{ secrets.key }}"
-          $env:value = $env:staticparam
+          $env:staticvalue = $env:staticparam
+          $env:token = "${{ secrets.GIT_TOKEN }}"
 
           $env:targetgithubUsername = "pavansirasanambedu"
           $env:targetrepositoryName = "common-encrypt-decrypt"
