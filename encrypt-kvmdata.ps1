@@ -20,8 +20,6 @@ try {
     $jsonContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
     $appdetailget = $jsonContent | ConvertFrom-Json
 
-    $env:jsondata
-
     # Specify the fields you want to encrypt
     # $fieldsToEncrypt = @("consumerKey", "consumerSecret")
     # $fieldsToEncrypt = @($env:fieldsToEncrypt)  #this is still pending and have to get field name dynamically from yml file.
