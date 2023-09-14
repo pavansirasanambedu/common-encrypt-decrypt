@@ -82,4 +82,4 @@ jobs:
           $env:targetFilePath = "decrypt-jsonpaload/decrypt-jsonpaload.json"
           
           # Run your script with Pester
-          Invoke-Pester ./decrypt-json-kvm-values.ps1 -Passthru
+          Invoke-Pester ./encrypt-json-kvm-values.ps1 -Passthru
