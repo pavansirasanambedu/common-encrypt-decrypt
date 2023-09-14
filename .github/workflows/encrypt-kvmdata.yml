@@ -7,6 +7,16 @@ env:
   DEPLOYMENT_NAME: Encrypt KVM data
   key: ${{ secrets.key }}
   FIELDS_TO_ENCRYPT: "name,value"
+  JSON_DATA: |
+    {
+    "keyValueEntries": [
+      {
+        "name": "example_key",
+        "value": "example_value"
+      }
+    ],
+    "nextPageToken": ""
+    }
 
 jobs:
   apigee-window-artifacts:
@@ -40,6 +50,8 @@ jobs:
           $env:sourcebranchName = "encrypt/kvmdata"
           $env:sourcefilePath = "kvmdata/kvmdata.json"
           $env:fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT
+
+          $env:jsondata = $env:JSON_DATA
 
           # $env:fieldsToEncrypt = "["consumerKey", "consumerSecret"]" #this is still pending and have to get field name dynamically from yml file.
 
