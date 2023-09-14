@@ -20,7 +20,7 @@ try {
     foreach ($entry in $appdetailget.keyValueEntries) {
         Write-Host "Processing entry: $($entry.name)"
 
-        foreach ($field in fieldsToEncrypt) {
+        foreach ($field in $fieldsToEncrypt) {
             $data = $entry.$field
 
             $dataBytes = [System.Text.Encoding]::UTF8.GetBytes($data)
