@@ -14,7 +14,7 @@ try {
     Write-Host $firstobjectname
 
     # Specify the fields you want to decrypt
-    $fieldsToEncrypt = $env:fieldsToEncrypt
+    $fieldsToEncrypt = @($env:fieldsToEncrypt)
 
     $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
     $AES.KeySize = 256
