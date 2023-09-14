@@ -35,9 +35,11 @@ try {
 
     # Loop through the specified fields and encrypt their values
     foreach ($field in $fieldsToEncrypt) {
+        Write-Host "entered into FOREACH...!"
         # Check if the credentials array exists and has at least one item
-        if ($appdetailget.credentials.Count -gt 0) {
-            $plaintext = $appdetailget.credentials[0].$field
+        if ($appdetailget.keyValueEntries.Count -gt 0) {
+            Write-Host "entered into IF...!"
+            $plaintext = $appdetailget.keyValueEntries[0].$field
 
             # Convert plaintext to bytes (UTF-8 encoding)
             $plaintextBytes = [System.Text.Encoding]::UTF8.GetBytes($plaintext)
@@ -52,7 +54,7 @@ try {
             $encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
 
             # Store the encrypted value back in the JSON data
-            $appdetailget.credentials[0].$field = @{
+            $appdetailget.keyValueEntries[0].$field = @{
                 "EncryptedValue" = $encryptedBase64
                 "IV" = $IVBase64
             }
