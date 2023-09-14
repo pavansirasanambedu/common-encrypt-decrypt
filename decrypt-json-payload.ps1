@@ -63,10 +63,11 @@ catch {
 }
 
 # Define your GitHub username, repository names, branch names, and file paths
-$githubUsername = "pavansirasanambedu"
-$repositoryName = "common-encrypt-decrypt"
-$targetBranchName = "decrypt/jsonpayload"
-$targetFilePath = "decrypt-jsonpaload/decrypt-jsonpaload.json"
+$githubUsername = $env:targetgithubUsername
+$repositoryName = $env:repositoryName
+$targetBranchName = $env:targetBranchName
+$targetFilePath = $env:targetFilePath
+
 
 # Define your GitHub personal access token
 $githubToken = $git_token  # Replace with your GitHub token
