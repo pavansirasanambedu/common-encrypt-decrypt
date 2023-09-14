@@ -21,7 +21,7 @@ try {
     $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
     $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
-    foreach ($entry in $inputjsonpayload.$firstobjectname) {
+    foreach ($entry in $inputjsonpayload.keyValueEntries) {
         Write-Host "Processing entry: $($entry.name)"
         Write-Host $inputjsonpayload.$firstobjectname
 
