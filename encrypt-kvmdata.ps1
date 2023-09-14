@@ -24,7 +24,7 @@ try {
     foreach ($entry in $inputjsonpayload.$firstobjectname) {
         Write-Host "Processing entry: $($entry.name)"
         Write-Host $inputjsonpayload.$firstobjectname
-        Write-Host "fieldname: $fieldsToEncrypt
+        Write-Host "fieldname: $fieldsToEncrypt"
 
         foreach ($field in $fieldsToEncrypt) {
             $data = $entry.$field
