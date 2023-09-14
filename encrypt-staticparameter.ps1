@@ -11,7 +11,9 @@ $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
 $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
 # Specify the plain text to be encrypted
-$plainText = "Hello Pavan...!"
+$plainText = $env:value
+
+Write-Host "plainText: $plainText"
 
 # Convert plaintext to bytes (UTF-8 encoding)
 $plainTextBytes = [System.Text.Encoding]::UTF8.GetBytes($plainText)
