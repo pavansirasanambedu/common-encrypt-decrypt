@@ -1,0 +1,85 @@
+name: Decrypt Json Payload
+
+on: 
+  workflow_dispatch:
+
+env:
+  DEPLOYMENT_NAME: Decrypt Json Payload
+  key: ${{ secrets.key }}
+  FIELDS_TO_DECRYPT: "consumerKey,consumerSecret"
+  JSON_DATA: |
+    {
+      "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
+      "attributes": [
+        {
+          "name": "developer-test-app",
+          "value": "developer app"
+        }
+      ],
+      "createdAt": "1694199580434",
+      "credentials": [
+        {
+          "consumerKey": {
+            "EncryptedValue": "daIwEBCWL0dXm+aFzGjdYvywspmfj8K2Ukdq4UBUSZbLROVhA7JjSYZa8OkFbl90Bco11dqpjTtzjLu0LGsKHw==",
+            "IV": "X+Pk6taWIydevcgAtDvi0g=="
+          },
+          "consumerSecret": {
+            "EncryptedValue": "a6NKCf1TCza/p074NbP1QpqG9YLiQjysnk+CDE2GsCM58Ti98IIFXDU7gN8nyA6YzHpjUDx2wAFIzt1HeM/DKyiRIvD05KqjHLYww6FcauM=",
+            "IV": "VSweQbGAEqPBXXNdBas3gA=="
+          },
+          "expiresAt": "-1",
+          "issuedAt": "1694199580447",
+          "status": "approved"
+        },
+        {
+          "consumerKey": "test153",
+          "consumerSecret": "6Wr30X2JASQew2htest",
+          "expiresAt": "1694199760844",
+          "issuedAt": "1694199580844",
+          "status": "approved"
+        }
+      ],
+      "developerId": "8770a62a-791d-4ba3-9502-ac5bde4f84ff",
+      "lastModifiedAt": "1694199580434",
+      "name": "developer-test-app",
+      "status": "approved",
+      "appFamily": "default"
+    }
+
+jobs:
+  apigee-window-artifacts:
+    name: Decrypt Json Payload
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Check out Git repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: "${{ secrets.GIT_TOKEN }}"
+
+      - name: Decrypt Json Payload
+        shell: pwsh
+        run: |
+          $env:ORG = "${{ secrets.APIGEE_ORG }}"
+          $env:token = "${{ secrets.GIT_TOKEN }}"
+          $env:key = "${{ secrets.key }}"
+          $env:fieldsToDecrypt = $env:FIELDS_TO_DECRYPT
+          $env:jsonInput = $env:JSON_DATA
+          
+          # # Pass the JSON_DATA environment variable as input to your script
+          # $env:jsonInput = $env:JSON_DATA | ConvertFrom-Json
+          # $env:jsonInput | Set-Content -Path "json-input-file.json"
+
+          # Define your GitHub username, repository names, branch names, and file paths
+          $env:targetgithubUsername = "pavansirasanambedu"
+          $env:repositoryName = "common-encrypt-decrypt"
+          $env:targetBranchName = "decrypt/jsonpayload"
+          $env:targetFilePath = "decrypt-jsonpaload/decrypt-jsonpaload.json"
+          
+          # Run your script with Pester
+          Invoke-Pester ./decrypt-json-kvm-values.ps1 -Passthru
