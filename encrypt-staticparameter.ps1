@@ -2,7 +2,7 @@ try {
     $git_token = $env:token
 
     # Plain text to encrypt
-    $plainText = "Hello Pavan...!"
+    $plainText = $env:staticvalue
 
     # Encryption key
     $keyHex = $env:key
