@@ -1,16 +1,16 @@
-name: Encrypt json file data
+name: Encrypt KVM data
 
 on:
   workflow_dispatch:
 
 env:
-  DEPLOYMENT_NAME: Encrypt json file data # TODO: update to deployment name
+  DEPLOYMENT_NAME: Encrypt KVM data
   key: ${{ secrets.key }}
   FIELDS_TO_ENCRYPT: "name,value"
 
 jobs:
   apigee-window-artifacts:
-    name: Encrypt json file data
+    name: Encrypt KVM data
     runs-on: ubuntu-latest
 
     permissions:
@@ -29,7 +29,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Encrypt json file data
+      - name: Encrypt KVM data
         shell: pwsh
         run: |
           $env:token = "${{ secrets.GIT_TOKEN }}"
