@@ -1,0 +1,52 @@
+name: Encrypt KVM data
+
+on:
+  workflow_dispatch:
+
+env:
+  DEPLOYMENT_NAME: Encrypt KVM data
+  key: ${{ secrets.key }}
+  FIELDS_TO_ENCRYPT: "name,value"
+
+jobs:
+  apigee-window-artifacts:
+    name: Encrypt KVM data
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Set Git identity
+        run: |
+          git config --global user.email "pavan.sirasanambedu@gmail.com"
+          git config --global user.name "pavansirasanambedu"
+
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Encrypt KVM data
+        shell: pwsh
+        run: |
+          $env:token = "${{ secrets.GIT_TOKEN }}"
+          $env:key = "${{ secrets.key }}"
+
+          $env:sourcegithubUsername = "pavansirasanambedu"
+          $env:sourcerepositoryName = "common-encrypt-decrypt"
+          $env:sourcebranchName = "encrypt/kvmdata"
+          $env:sourcefilePath = "kvmdata/kvmdata.json"
+          $env:fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT
+
+          # $env:fieldsToEncrypt = "["consumerKey", "consumerSecret"]" #this is still pending and have to get field name dynamically from yml file.
+
+          $env:targetgithubUsername = "pavansirasanambedu"
+          $env:targetrepositoryName = "common-encrypt-decrypt"
+          $env:targetBranchName = "encrypt/kvmdata" 
+          $env:targetFilePath = "encrypted-kvmdata/encrypted-kvmdata.json"
+          
+    
+          Invoke-Pester ./encrypt-kvmdata.ps1 -Passthru
