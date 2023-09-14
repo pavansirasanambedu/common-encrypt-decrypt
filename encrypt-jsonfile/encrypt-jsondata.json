@@ -10,12 +10,12 @@
   "credentials": [
     {
       "consumerKey": {
-        "IV": "TpcAolr6egn981Udk7XR5g==",
-        "EncryptedValue": "H+SkPq2BKkq8+IGv88qp5xc5zK5xNXaRrULP7zkDCRRJgk66eGAiM//uKKLNbUIVKqWLAOJSr0BJVMJwWHkYYw=="
+        "IV": "3dGAFT+fS6vshbtbiKjAwQ==",
+        "EncryptedValue": "s01L07PhM3XcEdZNLbQJfNRWyMqTNfBmEBq9v6QIaXWIz8nnA5S9MF1MPB8+1KZFk1ZwDZMR5L7mU6UDTED6Uw=="
       },
       "consumerSecret": {
-        "IV": "UPgVvaW1ejRYj/mJnLxOMg==",
-        "EncryptedValue": "iEp9OsQhpfr9FSbuk03YkeXpzlrbmJ02HqFS+hyCAD9QHngR6WJP7kIl4tuRqCL9BEeNlazDFApA7d8wPsZdxb8zWK55ouVtUSJiBIxURuE="
+        "IV": "Wm6uK9ULBdZ0XiUYKeIdWA==",
+        "EncryptedValue": "z3cSzJ9TAfmH1hTVH1DSJgN7fNg+lnzu5DHUHaGqPg9gZf070C1Mo1TgDOAYkeOltN9jZSMmtY7rewHVX/R9cB6QcFJBPnIba9DGFfWvg8c="
       },
       "expiresAt": "-1",
       "issuedAt": "1694199580447",
