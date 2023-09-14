@@ -7,6 +7,7 @@ env:
   DEPLOYMENT_NAME: Encrypt KVM data
   key: ${{ secrets.key }}
   FIELDS_TO_ENCRYPT: "name,value"
+  firstlevelobject: "keyValueEntries"
   JSON_DATA: |
     {
     "keyValueEntries": [
@@ -48,6 +49,10 @@ jobs:
           $env:fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT
 
           $env:jsondata = $env:JSON_DATA
+
+          $env:firstobject = $env:firstlevelobject
+          
+          
 
           $env:targetgithubUsername = "pavansirasanambedu"
           $env:targetrepositoryName = "common-encrypt-decrypt"
