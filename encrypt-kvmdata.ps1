@@ -5,6 +5,7 @@ try {
     Write-Host "Initial fileContent: $jsonContent"
 
     $inputjsonpayload = $jsonContent | ConvertFrom-Json
+    Write-Host $inputjsonpayload
 
     # Encryption key
     $keyHex = $env:key
@@ -13,13 +14,14 @@ try {
     $fieldsToEncrypt = $env:fieldsToEncrypt -split ","
 
     $firstobjectname = $env:firstobject
+    Write-Host $firstobjectname
 
     $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
     $AES.KeySize = 256
     $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
     $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
-    foreach ($entry in $inputjsonpayload.$firstobjectname) {
+    foreach ($entry in $inputjsonpayload.keyValueEntries) {
         Write-Host "Processing entry: $($entry.name)"
 
         foreach ($field in $fieldsToEncrypt) {
