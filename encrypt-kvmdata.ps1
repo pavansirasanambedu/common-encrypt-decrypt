@@ -4,8 +4,8 @@ try {
     $jsonContent = $env:jsondata
     Write-Host "Initial fileContent: $jsonContent"
 
-    $appdetailget = $jsonContent | ConvertFrom-Json
-    Write-Host $appdetailget
+    $inputjsonpayload = $jsonContent | ConvertFrom-Json
+    Write-Host $inputjsonpayload
 
     # Encryption key
     $keyHex = $env:key
@@ -21,7 +21,7 @@ try {
     $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
     $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
-    foreach ($entry in $appdetailget.keyValueEntries) {
+    foreach ($entry in $inputjsonpayload.$firstobjectname) {
         Write-Host "Processing entry: $($entry.name)"
 
         foreach ($field in $fieldsToEncrypt) {
@@ -43,7 +43,7 @@ try {
         }
     }
 
-    $encryptedJsonData = $appdetailget | ConvertTo-Json -Depth 10
+    $encryptedJsonData = $inputjsonpayload | ConvertTo-Json -Depth 10
 
     Write-Host "Encrypted data: $encryptedJsonData"
 
