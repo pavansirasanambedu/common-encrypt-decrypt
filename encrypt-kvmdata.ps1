@@ -12,10 +12,15 @@ try {
         Authorization = "Bearer $git_token"
     }
 
-    $fileContent = Invoke-RestMethod $apiUrl -Headers $headers
+    # $fileContent = Invoke-RestMethod $apiUrl -Headers $headers
+
+    $fileContent = $env:jsondata
+    Write-Host "fileContent: $fileContent"
 
     $jsonContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($fileContent.content))
     $appdetailget = $jsonContent | ConvertFrom-Json
+
+    $env:jsondata
 
     # Specify the fields you want to encrypt
     # $fieldsToEncrypt = @("consumerKey", "consumerSecret")
