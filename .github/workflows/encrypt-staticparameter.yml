@@ -29,4 +29,10 @@ jobs:
         run: |
           $env:key = "${{ secrets.key }}"
           $env:value = $env:staticparam
+
+          $env:targetgithubUsername = "pavansirasanambedu"
+          $env:targetrepositoryName = "common-encrypt-decrypt"
+          $env:targetBranchName = "encrypt/plaintext" 
+          $env:targetFilePath = "encrypt/encrypt-plaintext.json"
+
           Invoke-Pester ./encrypt-staticparameter.ps1 -Passthru
