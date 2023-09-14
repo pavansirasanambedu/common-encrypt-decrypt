@@ -22,8 +22,10 @@ try {
 
     foreach ($entry in $inputjsonpayload.$firstobjectname) {
         Write-Host "Processing entry: $($entry.name)"
+        Write-Host $inputjsonpayload.$firstobjectname
 
         foreach ($field in $fieldsToEncrypt) {
+        
             $data = $entry.$field
 
             $dataBytes = [System.Text.Encoding]::UTF8.GetBytes($data)
