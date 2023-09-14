@@ -24,9 +24,6 @@ try {
     # $fieldsToEncrypt = @("consumerKey", "consumerSecret")
     # $fieldsToEncrypt = @($env:fieldsToEncrypt)  #this is still pending and have to get field name dynamically from yml file.
 
-    # Specify the fields you want to decrypt
-    $fieldsToEncrypt = $env:fieldsToEncrypt -split ","
-
     # Encryption key
     $keyHex = $env:key  # Replace with your encryption key
 
@@ -37,30 +34,35 @@ try {
     $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
     # Loop through the specified fields and encrypt their values
-    foreach ($field in $fieldsToEncrypt) {
-        Write-Host "entered into FOREACH...!"
-        # Check if the credentials array exists and has at least one item
-        if ($appdetailget.keyValueEntries.Count -gt 0) {
-            Write-Host "entered into IF...!"
-            $plaintext = $appdetailget.keyValueEntries[0].$field
+    foreach ($entry in $appdetailget.keyValueEntries) {
+        Write-Host "Entered into FOREACH...!"
+        # Access the value of the current field
+        $name = $entry.name
+        $value = $entry.value
 
-            # Convert plaintext to bytes (UTF-8 encoding)
-            $plaintextBytes = [System.Text.Encoding]::UTF8.GetBytes($plaintext)
+        # Convert name and value to bytes (UTF-8 encoding)
+        $nameBytes = [System.Text.Encoding]::UTF8.GetBytes($name)
+        $valueBytes = [System.Text.Encoding]::UTF8.GetBytes($value)
 
-            # Generate a random initialization vector (IV)
-            $AES.GenerateIV()
-            $IVBase64 = [System.Convert]::ToBase64String($AES.IV)
+        # Generate a random initialization vector (IV)
+        $AES.GenerateIV()
+        $IVBase64 = [System.Convert]::ToBase64String($AES.IV)
 
-            # Encrypt the data
-            $encryptor = $AES.CreateEncryptor()
-            $encryptedBytes = $encryptor.TransformFinalBlock($plaintextBytes, 0, $plaintextBytes.Length)
-            $encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
+        # Encrypt the data
+        $encryptor = $AES.CreateEncryptor()
+        $encryptedNameBytes = $encryptor.TransformFinalBlock($nameBytes, 0, $nameBytes.Length)
+        $encryptedValueBytes = $encryptor.TransformFinalBlock($valueBytes, 0, $valueBytes.Length)
+        $encryptedNameBase64 = [System.Convert]::ToBase64String($encryptedNameBytes)
+        $encryptedValueBase64 = [System.Convert]::ToBase64String($encryptedValueBytes)
 
-            # Store the encrypted value back in the JSON data
-            $appdetailget.keyValueEntries[0].$field = @{
-                "EncryptedValue" = $encryptedBase64
-                "IV" = $IVBase64
-            }
+        # Update the encrypted values back in the JSON data
+        $entry.name = @{
+            "EncryptedValue" = $encryptedNameBase64
+            "IV" = $IVBase64
+        }
+        $entry.value = @{
+            "EncryptedValue" = $encryptedValueBase64
+            "IV" = $IVBase64
         }
     }
 
@@ -118,7 +120,7 @@ try {
         try {
             Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
 
-            Write-Host "encrypted data has been successfully updated in $targetFilePath in branch $sourceBranchName."
+            Write-Host "Encrypted data has been successfully updated in $targetFilePath in branch $sourceBranchName."
         }
         catch {
             Write-Host "An error occurred while updating the file: $_"
@@ -127,9 +129,9 @@ try {
     else {
         # File doesn't exist, make a POST request to create it
         try {
-            Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method PUT -Body $requestBody
+            Invoke-RestMethod -Uri $apiUrl -Headers $headers -Method POST -Body $requestBody
 
-            Write-Host "Decrypted data has been successfully created in $targetFilePath in branch $sourceBranchName."
+            Write-Host "Encrypted data has been successfully created in $targetFilePath in branch $sourceBranchName."
         }
         catch {
             Write-Host "An error occurred while creating the file: $_"
