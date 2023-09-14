@@ -6,6 +6,7 @@ on:
 env:
   DEPLOYMENT_NAME: Encrypt json file data # TODO: update to deployment name
   key: ${{ secrets.key }}
+  FIELDS_TO_ENCRYPT: "consumerKey,consumerSecret"
 
 jobs:
   apigee-window-artifacts:
@@ -38,6 +39,7 @@ jobs:
           $env:sourcerepositoryName = "common-encrypt-decrypt"
           $env:sourcebranchName = "encrypt/jsonfile"
           $env:sourcefilePath = "jsonfile/appdata.json"
+          $env:fieldsToEncrypt = $env:FIELDS_TO_ENCRYPT
 
           # $env:fieldsToEncrypt = "["consumerKey", "consumerSecret"]" #this is still pending and have to get field name dynamically from yml file.
 
