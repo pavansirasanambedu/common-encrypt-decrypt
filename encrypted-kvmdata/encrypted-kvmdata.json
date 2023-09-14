@@ -1,15 +1,1 @@
-{
-  "keyValueEntries": [
-    {
-      "name": {
-        "EncryptedValue": "nABTGm9lyWBB3p4RqjIUCA==",
-        "IV": "t38Xn2oWIo7vcEuRihBHNw=="
-      },
-      "value": {
-        "EncryptedValue": "Fs7OCG3P0dvFIKUjkifUug==",
-        "IV": "WAxBraYkyoyKUB8kGLHX5w=="
-      }
-    }
-  ],
-  "nextPageToken": ""
-}
+null
