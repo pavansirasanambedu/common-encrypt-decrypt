@@ -1,6 +1,6 @@
 try {
     $git_token = $env:token
-
+    
     $jsonContent = $env:jsondata
     Write-Host "Initial fileContent: $jsonContent"
 
@@ -22,7 +22,7 @@ try {
     $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
     foreach ($entry in $inputjsonpayload.$firstobjectname) {
-        Write-Host "Processing entry: $($entry.name)"
+        # Write-Host "Processing entry: $($entry.name)"
 
         foreach ($field in $fieldsToEncrypt) {
             $data = $entry.$field
