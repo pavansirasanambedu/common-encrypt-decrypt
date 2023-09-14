@@ -5,10 +5,12 @@ try {
     
     Write-Host "Initial fileContent: $jsonContent"
 
-    $appdetailget = $jsonContent | ConvertFrom-Json
+    $inputjsonpayload = $jsonContent | ConvertFrom-Json
 
     # Encryption key
     $keyHex = $env:key
+
+    $firstobjectname = $env:firstobject
 
     # Specify the fields you want to decrypt
     $fieldsToEncrypt = $env:fieldsToEncrypt -split ","
@@ -18,7 +20,7 @@ try {
     $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
     $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
-    foreach ($entry in $appdetailget.keyValueEntries) {
+    foreach ($entry in $inputjsonpayload.$firstobjectname) {
         Write-Host "Processing entry: $($entry.name)"
 
         foreach ($field in $fieldsToEncrypt) {
