@@ -11,6 +11,7 @@ try {
     $keyHex = $env:key
 
     $firstobjectname = $env:firstobject
+    Write-Host $firstobjectname
 
     # Specify the fields you want to decrypt
     $fieldsToEncrypt = $env:fieldsToEncrypt -split ","
