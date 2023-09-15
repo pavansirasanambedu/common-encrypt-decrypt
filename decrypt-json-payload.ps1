@@ -44,6 +44,10 @@ try {
 
                     # Update the copied JSON object with the decrypted value
                     $entry.$field = $decryptedText
+
+                    # Remove the "EncryptedValue" and "IV" fields
+                    $entry.PSObject.Properties.Remove('EncryptedValue')
+                    $entry.PSObject.Properties.Remove('IV')
                 } else {
                     Write-Host "IV is missing for $field. Skipping decryption."
                 }
@@ -64,7 +68,6 @@ try {
 catch {
     Write-Host "An error occurred: $_"
 }
-
 
 
 
