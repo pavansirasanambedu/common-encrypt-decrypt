@@ -1,10 +1,10 @@
-name: Decrypt Json Payload
+name: Decrypt KVM data
 
 on:
   workflow_dispatch:
 
 env:
-  DEPLOYMENT_NAME: Decrypt Json Payload
+  DEPLOYMENT_NAME: Decrypt KVM data
   key: ${{ secrets.key }}
   FIELDS_TO_DECRYPT: "consumerKey,consumerSecret"
   FIRST_LEVEL_OBJECT: "credentials"
@@ -13,7 +13,7 @@ env:
 
 jobs:
   apigee-window-artifacts:
-    name: Decrypt Json Payload
+    name: Decrypt KVM data
     runs-on: ubuntu-latest
 
     permissions:
@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
           token: "${{ secrets.GIT_TOKEN }}"
 
-      - name: Decrypt Json Payload
+      - name: Decrypt KVM data
         shell: pwsh
         run: |
           $env:ORG = "${{ secrets.APIGEE_ORG }}"
