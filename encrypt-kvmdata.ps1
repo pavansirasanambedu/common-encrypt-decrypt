@@ -25,6 +25,7 @@ function Encrypt-JsonData {
             $encryptedBytes = $encryptor.TransformFinalBlock($dataBytes, 0, $dataBytes.Length)
             $encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
 
+            # Update the original JSON object with the encrypted values
             $entry.$field = @{
                 "EncryptedValue" = $encryptedBase64
                 "IV" = $IVBase64
@@ -32,13 +33,12 @@ function Encrypt-JsonData {
         }
     }
 
-    # Return the encrypted JSON data
+    # Return the modified JSON data
     return $data
 }
 
 try {
     $git_token = $env:token
-    $env:JSON_FILE_PATH = "kvmdata/kvmdata.json"
 
     # Load JSON content from the file
     $jsonContent = Get-Content $env:JSON_FILE_PATH -Raw | ConvertFrom-Json
@@ -55,17 +55,21 @@ try {
     $fieldPath = $env:FIRST_LEVEL_OBJECT
 
     # Call the Encrypt-JsonData function to encrypt the specified fields
-    $encryptedJsonData = Encrypt-JsonData -data $jsonContent.$fieldPath -fieldsToEncrypt $fieldsToEncrypt -keyHex $keyHex
+    $jsonContent.$fieldPath = Encrypt-JsonData -data $jsonContent.$fieldPath -fieldsToEncrypt $fieldsToEncrypt -keyHex $keyHex
+
+    # Convert the JSON data back to a string
+    $encryptedJsonData = $jsonContent | ConvertTo-Json -Depth 10
 
     Write-Host "Encrypted data: $encryptedJsonData"
 
-    # Now you have the encrypted JSON data and can use it as needed.
+    # Now you have the encrypted JSON data with values updated.
     # ...
 
 }
 catch {
     Write-Host "An error occurred: $_"
 }
+
 
 
 
