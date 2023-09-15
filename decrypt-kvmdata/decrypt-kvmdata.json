@@ -1,1 +1,9 @@
-
+{
+  "keyValueEntries": [
+    {
+      "name": "example_key",
+      "value": "example_value"
+    }
+  ],
+  "nextPageToken": ""
+}
