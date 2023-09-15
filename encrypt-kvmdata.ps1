@@ -1,39 +1,47 @@
-# Define a function to encrypt fields
-function Encrypt-Fields {
+# Define a function to encrypt the JSON data and return the encrypted JSON
+function Encrypt-JsonData {
     param (
         [System.Object]$data,
         [System.String[]]$fieldsToEncrypt,
-        [System.Security.Cryptography.AesCryptoServiceProvider]$AES
+        [System.String]$keyHex
     )
 
-    foreach ($field in $fieldsToEncrypt) {
-        $dataValue = $data.$field
+    # Create an AES object for encryption
+    $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
+    $AES.KeySize = 256
+    $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
+    $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
-        $dataBytes = [System.Text.Encoding]::UTF8.GetBytes($dataValue)
+    foreach ($entry in $data) {
+        foreach ($field in $fieldsToEncrypt) {
+            $dataValue = $entry.$field
 
-        $AES.GenerateIV()
-        $IVBase64 = [System.Convert]::ToBase64String($AES.IV)
+            $dataBytes = [System.Text.Encoding]::UTF8.GetBytes($dataValue)
 
-        $encryptor = $AES.CreateEncryptor()
-        $encryptedBytes = $encryptor.TransformFinalBlock($dataBytes, 0, $dataBytes.Length)
-        $encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
+            $AES.GenerateIV()
+            $IVBase64 = [System.Convert]::ToBase64String($AES.IV)
 
-        $data.$field = @{
-            "EncryptedValue" = $encryptedBase64
-            "IV" = $IVBase64
+            $encryptor = $AES.CreateEncryptor()
+            $encryptedBytes = $encryptor.TransformFinalBlock($dataBytes, 0, $dataBytes.Length)
+            $encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
+
+            $entry.$field = @{
+                "EncryptedValue" = $encryptedBase64
+                "IV" = $IVBase64
+            }
         }
     }
 
+    # Return the encrypted JSON data
     return $data
 }
 
 try {
     $git_token = $env:token
-
     $env:JSON_FILE_PATH = "kvmdata/kvmdata.json"
 
     # Load JSON content from the file
-    $jsonContent = Get-Content $env:JSON_FILE_PATH -Raw -Encoding UTF8 | ConvertFrom-Json
+    $jsonContent = Get-Content $env:JSON_FILE_PATH -Raw | ConvertFrom-Json
     Write-Host "jsonContent: $jsonContent"
 
     # Decryption key
@@ -46,23 +54,13 @@ try {
     # Define the path to the fields in your JSON data
     $fieldPath = $env:FIRST_LEVEL_OBJECT
 
-    # Create an AES object for encryption
-    $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
-    $AES.KeySize = 256
-    $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
-    $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
-
-    # Loop through the JSON data and encrypt specified fields
-    foreach ($entry in $jsonContent.$fieldPath) {
-        Write-Host "Entered into FOREACH...!"
-        # Call the Encrypt-Fields function to encrypt the specified fields
-        $entry = Encrypt-Fields -data $entry -fieldsToEncrypt $fieldsToEncrypt -AES $AES
-    }
-
-    # Convert the JSON data back to a string
-    $encryptedJsonData = $jsonContent | ConvertTo-Json -Depth 10
+    # Call the Encrypt-JsonData function to encrypt the specified fields
+    $encryptedJsonData = Encrypt-JsonData -data $jsonContent.$fieldPath -fieldsToEncrypt $fieldsToEncrypt -keyHex $keyHex
 
     Write-Host "Encrypted data: $encryptedJsonData"
+
+    # Now you have the encrypted JSON data and can use it as needed.
+    # ...
 
 }
 catch {
