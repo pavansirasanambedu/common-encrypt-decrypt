@@ -28,7 +28,7 @@ try {
             $encryptedField = $entry.$field
             Write-Host "encryptedField: $encryptedField"
 
-            if ($keyValueEntries.$field) {
+            if ($entry.$field) {
                 $encryptedValueBase64 = $firstlevelitteratename.$field.EncryptedValue
                 $IVBase64 = $firstlevelitteratename.$field.IV
 
