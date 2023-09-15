@@ -6,7 +6,7 @@ on: push
 env:
   DEPLOYMENT_NAME: Decrypt KVM data
   key: ${{ secrets.key }}
-  FIELDS_TO_DECRYPT: "consumerKey,consumerSecret"
+  FIELDS_TO_DECRYPT: "name,value"
   FIRST_LEVEL_OBJECT: "credentials"
   FIRST_ITTERATE_OBJECT: "credential"
   JSON_FILE_PATH: "encrypt-kvmdata/encrypt-kvmdata.json"  # Update this with the actual file path
