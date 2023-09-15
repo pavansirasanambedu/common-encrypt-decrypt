@@ -3,12 +3,14 @@ try {
 
     # Load JSON content from the file
     $jsonContent = Get-Content $env:JSON_FILE_PATH -Raw | ConvertFrom-Json
+    Write-Host "jsonContent: $jsonContent"
 
     # Decryption key
     $keyHex = $env:key
 
     # Specify the fields you want to decrypt
     $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
+    Write-Host "fieldsToDecrypt:$fieldsToDecrypt"
     
     # Define the path to the fields in your JSON data
     $fieldPath = $env:FIRST_LEVEL_OBJECT
@@ -22,10 +24,13 @@ try {
     # Loop through the JSON data and decrypt specified fields
     foreach ($entry in $jsonContent.$fieldPath) {
         foreach ($field in $fieldsToDecrypt) {
+            Write-Host "Entered into FOR EACH..!"
             $encryptedField = $entry.$field
+            Write-Host "encryptedField: $encryptedField"
 
             # Check if the field is encrypted (assuming it's an object with "EncryptedValue" and "IV")
             if ($encryptedField -is [Hashtable] -and $encryptedField.Contains("EncryptedValue") -and $encryptedField.Contains("IV")) {
+                Write-Host "Entered into IF CONDITION..!"
                 $encryptedValueBase64 = $encryptedField.EncryptedValue
                 $IVBase64 = $encryptedField.IV
 
