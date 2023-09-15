@@ -57,10 +57,10 @@ try {
     Write-Host "Decrypted data: $decryptedJsonData"
 
     # Define your GitHub username, repository names, branch names, and file paths
-    $githubUsername =  $env:targetgithubUsername
-    $repositoryName = $env:targetrepositoryName
-    $targetBranchName = $env:targetBranchName
-    $targetFilePath = $env:targetFilePath
+    $githubUsername =  "pavansirasanambedu"
+    $repositoryName = "common-encrypt-decrypt"
+    $targetBranchName = "decrypt/kvmdata"
+    $targetFilePath = "decrypt-kvmdata/decrypt-kvmdata.json"
     
     # Define your GitHub personal access token
     $githubToken = $git_token  # Replace with your GitHub token
