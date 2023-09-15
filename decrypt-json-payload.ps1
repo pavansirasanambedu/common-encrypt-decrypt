@@ -10,8 +10,8 @@ try {
 
     # Specify the fields you want to decrypt
     $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
-    Write-Host "fieldsToDecrypt:$fieldsToDecrypt"
-    
+    Write-Host "fieldsToDecrypt: $fieldsToDecrypt"
+
     # Define the path to the fields in your JSON data
     $fieldPath = $env:FIRST_LEVEL_OBJECT
 
@@ -22,15 +22,15 @@ try {
     $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
     # Loop through the JSON data and decrypt specified fields
-    foreach ($entry in $jsonContent.$fieldPath) {
+    foreach ($entry in $jsonContent.$fieldPath.entry) {
         foreach ($field in $fieldsToDecrypt) {
             Write-Host "Entered into FOR EACH..!"
             $encryptedField = $entry.$field
             Write-Host "encryptedField: $encryptedField"
 
-            if ($entry.$field) {
-                $encryptedValueBase64 = $firstlevelitteratename.$field.EncryptedValue
-                $IVBase64 = $firstlevelitteratename.$field.IV
+            if ($encryptedField) {
+                $encryptedValueBase64 = $encryptedField.EncryptedValue
+                $IVBase64 = $encryptedField.IV
 
                 if (![string]::IsNullOrEmpty($IVBase64)) {
                     # Convert IV and encrypted value to bytes
@@ -45,29 +45,11 @@ try {
                     $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
 
                     # Update the JSON object with the decrypted value
-                    $firstlevelitteratename.$field = $decryptedText
+                    $entry.$field = $decryptedText
                 } else {
                     Write-Host "IV is missing for $field. Skipping decryption."
                 }
             }
-            
-
-            # # Check if the field is encrypted (assuming it's an object with "EncryptedValue" and "IV")
-            # if ($encryptedField -is [Hashtable] -and $encryptedField.Contains("EncryptedValue") -and $encryptedField.Contains("IV")) {
-            #     Write-Host "Entered into IF CONDITION..!"
-            #     $encryptedValueBase64 = $encryptedField.EncryptedValue
-            #     $IVBase64 = $encryptedField.IV
-
-            #     $IV = [System.Convert]::FromBase64String($IVBase64)
-            #     $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
-
-            #     $decryptor = $AES.CreateDecryptor()
-            #     $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
-            #     $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
-
-            #     # Update the field with the decrypted value
-            #     $entry.$field = $decryptedText
-            # }
         }
     }
 
@@ -79,6 +61,7 @@ try {
 catch {
     Write-Host "An error occurred: $_"
 }
+
 
 
 
