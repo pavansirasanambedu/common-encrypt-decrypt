@@ -58,8 +58,10 @@ try {
     # Convert the entire updated JSON object back to JSON format
     $updatedJsonContent = $decryptedJsonObject | ConvertTo-Json -Depth 10
 
-    # Display the updated JSON content
+    # Display the updated JSON content without "EncryptedValue" and "IV"
     Write-Host "Updated JSON Content:"
+    $updatedJsonContent = $updatedJsonContent -replace '"EncryptedValue": ".*?"', '"EncryptedValue": null'
+    $updatedJsonContent = $updatedJsonContent -replace '"IV": ".*?"', '"IV": null'
     Write-Host $updatedJsonContent
 
     # The rest of your code for updating the GitHub repository goes here
@@ -68,6 +70,7 @@ try {
 catch {
     Write-Host "An error occurred: $_"
 }
+
 
 
 
