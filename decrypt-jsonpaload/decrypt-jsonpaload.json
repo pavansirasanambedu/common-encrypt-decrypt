@@ -9,8 +9,14 @@
   "createdAt": "1694199580434",
   "credentials": [
     {
-      "consumerKey": "8RTg8AsdwpOgk3792d8A7LHgKxyKDGt1s4y3G7iNuOeYZrTb",
-      "consumerSecret": "y25ueTdsKPQaHhZ4Ru9wcORo9YItaGLSRoEgneLBBoTCtprLKEVEQTUSGqU2thTE",
+      "consumerKey": {
+        "EncryptedValue": "daIwEBCWL0dXm+aFzGjdYvywspmfj8K2Ukdq4UBUSZbLROVhA7JjSYZa8OkFbl90Bco11dqpjTtzjLu0LGsKHw==",
+        "IV": "X+Pk6taWIydevcgAtDvi0g=="
+      },
+      "consumerSecret": {
+        "EncryptedValue": "a6NKCf1TCza/p074NbP1QpqG9YLiQjysnk+CDE2GsCM58Ti98IIFXDU7gN8nyA6YzHpjUDx2wAFIzt1HeM/DKyiRIvD05KqjHLYww6FcauM=",
+        "IV": "VSweQbGAEqPBXXNdBas3gA=="
+      },
       "expiresAt": "-1",
       "issuedAt": "1694199580447",
       "status": "approved"
