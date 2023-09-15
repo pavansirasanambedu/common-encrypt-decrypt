@@ -27,7 +27,7 @@ try {
         Write-Host "Decrypting field: $field"
 
         # Loop through credentials
-        foreach ($entry in $jsonObject.$firstobjectname) {
+        foreach ($entry in $jsonObject.$firstitterateobjectname) {
             Write-Host "Entered into 2nd for each...!"
             if ($entry.$field) {
                 $encryptedValueBase64 = $entry.$field.EncryptedValue
@@ -65,6 +65,7 @@ try {
 catch {
     Write-Host "An error occurred: $_"
 }
+
 
 
 
