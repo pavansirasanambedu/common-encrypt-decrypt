@@ -1,0 +1,49 @@
+name: Decrypt Json Payload
+
+on:
+  workflow_dispatch:
+
+env:
+  DEPLOYMENT_NAME: Decrypt Json Payload
+  key: ${{ secrets.key }}
+  FIELDS_TO_DECRYPT: "consumerKey,consumerSecret"
+  FIRST_LEVEL_OBJECT: "credentials"
+  FIRST_ITTERATE_OBJECT: "credential"
+  JSON_FILE_PATH: "path/to/your/jsonfile.json"  # Update this with the actual file path
+
+jobs:
+  apigee-window-artifacts:
+    name: Decrypt Json Payload
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Check out Git repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: "${{ secrets.GIT_TOKEN }}"
+
+      - name: Decrypt Json Payload
+        shell: pwsh
+        run: |
+          $env:ORG = "${{ secrets.APIGEE_ORG }}"
+          $env:token = "${{ secrets.GIT_TOKEN }}"
+          $env:key = "${{ secrets.key }}"
+          
+          $env:fieldsToDecrypt = $env:FIELDS_TO_DECRYPT
+          $env:jsonInput = Get-Content $env:JSON_FILE_PATH | Out-String
+          $env:firstobject = $env:FIRST_LEVEL_OBJECT # credentials
+          $env:firstitterateobject = $env:FIRST_ITTERATE_OBJECT  # credential
+
+          # Define your GitHub username, repository names, branch names, and file paths
+          $env:targetgithubUsername = "pavansirasanambedu"
+          $env:repositoryName = "common-encrypt-decrypt"
+          $env:targetBranchName = "decrypt/jsonpayload"
+          $env:targetFilePath = "decrypt-jsonpaload/decrypt-jsonpaload.json"
+          
+          # Run your script with Pester
+          Invoke-Pester ./decrypt-json-payload.ps1 -Passthru
