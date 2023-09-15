@@ -35,7 +35,11 @@ jobs:
           $env:key = "${{ secrets.key }}"
           
           $env:fieldsToDecrypt = $env:FIELDS_TO_DECRYPT
-          $env:jsonInput = Get-Content $env:JSON_FILE_PATH -Raw #| Out-String
+          # $env:jsonInput = Get-Content $env:JSON_FILE_PATH -Raw #| Out-String
+          $env:jsondata = Get-Content $env:JSON_FILE_PATH -Raw -Encoding UTF8
+
+
+          
           $env:firstobject = $env:FIRST_LEVEL_OBJECT # credentials
           $env:firstitterateobject = $env:FIRST_ITTERATE_OBJECT  # credential
 
