@@ -76,8 +76,8 @@ jobs:
           
           $env:fieldsToDecrypt = $env:FIELDS_TO_DECRYPT
           $env:jsonInput = $env:JSON_DATA
-          $env:firstobject = $env:FIRSTLEVELOBJECT
-          $env:firstitterateobject = $env:FIRST_ITTERATE_OBJECT
+          $env:firstobject = $env:FIRSTLEVELOBJECT # credentials
+          $env:firstitterateobject = $env:FIRST_ITTERATE_OBJECT  # credential
           
           
           # # Pass the JSON_DATA environment variable as input to your script
