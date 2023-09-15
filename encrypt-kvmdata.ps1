@@ -56,6 +56,8 @@ try {
     # Define the path to the fields in your JSON data
     $fieldPath = $env:FIRST_LEVEL_OBJECT
 
+    Write-Host "Got data from FUNCTION...!"
+
     # Call the Encrypt-JsonData function to encrypt the specified fields
     $jsonContent.$fieldPath = Encrypt-JsonData -data $jsonContent.$fieldPath -fieldsToEncrypt $fieldsToEncrypt -keyHex $keyHex
 
