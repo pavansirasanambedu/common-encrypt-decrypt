@@ -1,3 +1,43 @@
+# Define a function to encrypt the JSON data and return the encrypted JSON
+function Encrypt-JsonData {
+    param (
+        [System.Object]$data,
+        [System.String[]]$fieldsToEncrypt,
+        [System.String]$keyHex
+    )
+
+    # Create an AES object for encryption
+    $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
+    $AES.KeySize = 256
+    $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
+    $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
+
+    foreach ($entry in $data) {
+        foreach ($field in $fieldsToEncrypt) {
+            $dataValue = $entry.$field
+
+            $dataBytes = [System.Text.Encoding]::UTF8.GetBytes($dataValue)
+
+            $AES.GenerateIV()
+            $IVBase64 = [System.Convert]::ToBase64String($AES.IV)
+
+            $encryptor = $AES.CreateEncryptor()
+            $encryptedBytes = $encryptor.TransformFinalBlock($dataBytes, 0, $dataBytes.Length)
+            $encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
+
+            # Update the original JSON object with the encrypted values
+            $entry.$field = @{
+                "EncryptedValue" = $encryptedBase64
+                "IV" = $IVBase64
+            }
+        }
+    }
+
+    # Return the modified JSON data
+    return $data
+}
+
+
 try {
     $git_token = $env:token
     
@@ -39,48 +79,6 @@ catch {
 
 
 
-
-
-
-
-# Define a function to encrypt the JSON data and return the encrypted JSON
-function Encrypt-JsonData {
-    param (
-        [System.Object]$data,
-        [System.String[]]$fieldsToEncrypt,
-        [System.String]$keyHex
-    )
-
-    # Create an AES object for encryption
-    $AES = New-Object System.Security.Cryptography.AesCryptoServiceProvider
-    $AES.KeySize = 256
-    $AES.Key = [System.Text.Encoding]::UTF8.GetBytes($keyHex.PadRight(32))
-    $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
-
-    foreach ($entry in $data) {
-        foreach ($field in $fieldsToEncrypt) {
-            $dataValue = $entry.$field
-
-            $dataBytes = [System.Text.Encoding]::UTF8.GetBytes($dataValue)
-
-            $AES.GenerateIV()
-            $IVBase64 = [System.Convert]::ToBase64String($AES.IV)
-
-            $encryptor = $AES.CreateEncryptor()
-            $encryptedBytes = $encryptor.TransformFinalBlock($dataBytes, 0, $dataBytes.Length)
-            $encryptedBase64 = [System.Convert]::ToBase64String($encryptedBytes)
-
-            # Update the original JSON object with the encrypted values
-            $entry.$field = @{
-                "EncryptedValue" = $encryptedBase64
-                "IV" = $IVBase64
-            }
-        }
-    }
-
-    # Return the modified JSON data
-    return $data
-}
 
 
 
