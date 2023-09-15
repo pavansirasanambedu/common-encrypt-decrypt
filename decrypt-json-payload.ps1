@@ -22,7 +22,7 @@ try {
     $AES.Mode = [System.Security.Cryptography.CipherMode]::CBC
 
     # Loop through the JSON data and decrypt specified fields
-    foreach ($entry in $jsonContent.KeyValueEntries.entry) {
+    foreach ($entry in $jsonContent.$fieldPath) {
         foreach ($field in $fieldsToDecrypt) {
             Write-Host "Entered into FOR EACH..!"
             $encryptedField = $entry.$field
@@ -61,6 +61,7 @@ try {
 catch {
     Write-Host "An error occurred: $_"
 }
+
 
 
 
