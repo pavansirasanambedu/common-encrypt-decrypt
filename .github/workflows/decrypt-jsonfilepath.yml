@@ -7,7 +7,7 @@ env:
   DEPLOYMENT_NAME: Decrypt KVM data
   key: ${{ secrets.key }}
   FIELDS_TO_DECRYPT: "name,value"
-  FIRST_LEVEL_OBJECT: "credentials"
+  FIRST_LEVEL_OBJECT: "KeyValueEntries"
   FIRST_ITTERATE_OBJECT: "credential"
   JSON_FILE_PATH: "encrypt-kvmdata/encrypt-kvmdata.json"  # Update this with the actual file path
 
@@ -40,7 +40,7 @@ jobs:
 
 
           
-          $env:firstobject = $env:FIRST_LEVEL_OBJECT # credentials
+          $env:firstobject = $env:FIRST_LEVEL_OBJECT # KeyValueEntries
           $env:firstitterateobject = $env:FIRST_ITTERATE_OBJECT  # credential
 
           # Define your GitHub username, repository names, branch names, and file paths
