@@ -27,6 +27,7 @@ try {
 
         foreach ($field in $fieldsToDecrypt) {
             $encryptedField = $entry.$field
+            Write-Host "Entered into 2nd FOREACH...!"
 
             # Check if the field is encrypted
             if ($encryptedField -is [Hashtable]) {
