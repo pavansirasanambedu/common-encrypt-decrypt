@@ -7,6 +7,7 @@ $firstitterateobjectname = $env:firstitterateobject
 
 # Specify the fields you want to decrypt
 $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
+$decryptedValues = @{}  # Create an empty hashtable to store decrypted values
 
 try {
     # Parse the JSON content into a PowerShell object
@@ -44,8 +45,8 @@ try {
                     $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
                     $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
 
-                    # Update the JSON object with the decrypted value
-                    $entry.$field = $decryptedText
+                    # Store the decrypted value in the hashtable
+                    $decryptedValues[$field] = $decryptedText
                 } else {
                     Write-Host "IV is missing for $field. Skipping decryption."
                 }
@@ -53,10 +54,10 @@ try {
         }
     }
 
-    # Display the JSON object with decrypted values
-    $decrypteddata = $jsonObject | ConvertTo-Json -Depth 10
+    # Display the decrypted values
     Write-Host "Decrypted Data:"
-    Write-Host $decrypteddata
+    Write-Host "Decrypted consumerKey: $($decryptedValues['consumerKey'])"
+    Write-Host "Decrypted consumerSecret: $($decryptedValues['consumerSecret'])"
 
     # The rest of your code for updating the GitHub repository goes here
 
@@ -64,6 +65,7 @@ try {
 catch {
     Write-Host "An error occurred: $_"
 }
+
 
 
 
