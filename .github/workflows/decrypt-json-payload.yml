@@ -76,7 +76,7 @@ jobs:
           
           $env:fieldsToDecrypt = $env:FIELDS_TO_DECRYPT
           $env:jsonInput = $env:JSON_DATA
-          $env:firstobject = $env:FIRSTLEVELOBJECT # credentials
+          $env:firstobject = $env:FIRST_LEVEL_OBJECT # credentials
           $env:firstitterateobject = $env:FIRST_ITTERATE_OBJECT  # credential
           
           
