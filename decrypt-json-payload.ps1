@@ -28,22 +28,46 @@ try {
             $encryptedField = $entry.$field
             Write-Host "encryptedField: $encryptedField"
 
-            # Check if the field is encrypted (assuming it's an object with "EncryptedValue" and "IV")
-            if ($encryptedField -is [Hashtable] -and $encryptedField.Contains("EncryptedValue") -and $encryptedField.Contains("IV")) {
-                Write-Host "Entered into IF CONDITION..!"
-                $encryptedValueBase64 = $encryptedField.EncryptedValue
-                $IVBase64 = $encryptedField.IV
+            if ($keyValueEntries.$field) {
+                $encryptedValueBase64 = $firstlevelitteratename.$field.EncryptedValue
+                $IVBase64 = $firstlevelitteratename.$field.IV
 
-                $IV = [System.Convert]::FromBase64String($IVBase64)
-                $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
+                if (![string]::IsNullOrEmpty($IVBase64)) {
+                    # Convert IV and encrypted value to bytes
+                    $IV = [System.Convert]::FromBase64String($IVBase64)
+                    $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
 
-                $decryptor = $AES.CreateDecryptor()
-                $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
-                $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
+                    # Create a decryptor with the specified IV
+                    $decryptor = $AES.CreateDecryptor($AES.Key, $IV)
 
-                # Update the field with the decrypted value
-                $entry.$field = $decryptedText
+                    # Decrypt the data
+                    $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
+                    $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
+
+                    # Update the JSON object with the decrypted value
+                    $firstlevelitteratename.$field = $decryptedText
+                } else {
+                    Write-Host "IV is missing for $field. Skipping decryption."
+                }
             }
+            
+
+            # # Check if the field is encrypted (assuming it's an object with "EncryptedValue" and "IV")
+            # if ($encryptedField -is [Hashtable] -and $encryptedField.Contains("EncryptedValue") -and $encryptedField.Contains("IV")) {
+            #     Write-Host "Entered into IF CONDITION..!"
+            #     $encryptedValueBase64 = $encryptedField.EncryptedValue
+            #     $IVBase64 = $encryptedField.IV
+
+            #     $IV = [System.Convert]::FromBase64String($IVBase64)
+            #     $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
+
+            #     $decryptor = $AES.CreateDecryptor()
+            #     $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
+            #     $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
+
+            #     # Update the field with the decrypted value
+            #     $entry.$field = $decryptedText
+            # }
         }
     }
 
