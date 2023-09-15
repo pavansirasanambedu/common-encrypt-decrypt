@@ -1,7 +1,7 @@
 name: Decrypt Json Payload
 
-on: 
-  workflow_dispatch:
+on: push
+  # workflow_dispatch:
 
 env:
   DEPLOYMENT_NAME: Decrypt Json Payload
