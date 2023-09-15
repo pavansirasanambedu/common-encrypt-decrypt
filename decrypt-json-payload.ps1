@@ -1,6 +1,3 @@
-
-
-
 # Load the environment variables
 $git_token = $env:token
 $fileContent = $env:jsonInput
@@ -74,9 +71,11 @@ $repositoryName = $env:repositoryName
 $targetBranchName = $env:targetBranchName
 $targetFilePath = $env:targetFilePath
 
-
 # Define your GitHub personal access token
 $githubToken = $git_token  # Replace with your GitHub token
+
+# ... rest of your code for updating the GitHub repository ...
+
 
 # Encode the content you want to update as base64
 $updatedContent = $decrypteddata
