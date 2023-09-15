@@ -24,34 +24,35 @@ try {
     # Loop through the specified fields and decrypt their values
     foreach ($field in $fieldsToDecrypt) {
         Write-Host "Decrypting field: $field"
-
+    
         # Loop through credentials
-        foreach ($firstitterateobjectname in $jsonObject.$firstobjectname) {
+        foreach ($firstitterateobject in $jsonObject.$firstobjectname) {
             Write-Host "Entered into 2nd for each...!"
-            if ($firstitterateobjectname.$field) {
-                $encryptedValueBase64 = $firstitterateobjectname.$field.EncryptedValue
-                $IVBase64 = $credential.$field.IV
-
+            if ($firstitterateobject.$field) {
+                $encryptedValueBase64 = $firstitterateobject.$field.EncryptedValue
+                $IVBase64 = $firstitterateobject.$field.IV
+    
                 if (![string]::IsNullOrEmpty($IVBase64)) {
                     # Convert IV and encrypted value to bytes
                     $IV = [System.Convert]::FromBase64String($IVBase64)
                     $encryptedBytes = [System.Convert]::FromBase64String($encryptedValueBase64)
-
+    
                     # Create a decryptor with the specified IV
                     $decryptor = $AES.CreateDecryptor($AES.Key, $IV)
-
+    
                     # Decrypt the data
                     $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
                     $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
-
+    
                     # Update the JSON object with the decrypted value
-                    $firstitterateobjectname.$field = $decryptedText
+                    $firstitterateobject.$field = $decryptedText
                 } else {
                     Write-Host "IV is missing for $field. Skipping decryption."
                 }
             }
         }
     }
+
 
     # Display the JSON object with decrypted values
     $decrypteddata = $jsonObject | ConvertTo-Json -Depth 10
