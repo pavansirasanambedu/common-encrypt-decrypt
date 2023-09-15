@@ -39,6 +39,8 @@ function Encrypt-JsonData {
 
 try {
     $git_token = $env:token
+    
+    $env:JSON_FILE_PATH = "kvmdata/kvmdata.json"
 
     # Load JSON content from the file
     $jsonContent = Get-Content $env:JSON_FILE_PATH -Raw | ConvertFrom-Json
