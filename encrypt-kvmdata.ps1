@@ -33,7 +33,7 @@ try {
     $env:JSON_FILE_PATH = "kvmdata/kvmdata.json"
 
     # Load JSON content from the file
-    $jsonContent = Get-Content $env:JSON_FILE_PATH -Raw | ConvertFrom-Json
+    $jsonContent = Get-Content $env:JSON_FILE_PATH -Raw -Encoding UTF8 | ConvertFrom-Json
     Write-Host "jsonContent: $jsonContent"
 
     # Decryption key
