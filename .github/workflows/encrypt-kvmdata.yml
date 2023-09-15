@@ -50,7 +50,7 @@ jobs:
 
           $env:jsondata = $env:JSON_DATA
 
-          $env:firstobject = $env:firstlevelobject
+          $env:FIRST_LEVEL_OBJECT = $env:firstlevelobject
           
           
 
