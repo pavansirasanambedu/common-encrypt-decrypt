@@ -12,43 +12,41 @@ env:
   
   JSON_DATA: |
     {
-      "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
-      "attributes": [
-        {
-          "name": "developer-test-app",
-          "value": "developer app"
-        }
-      ],
-      "createdAt": "1694199580434",
-      "credentials": [
-        {
-          "consumerKey": {
-            "EncryptedValue": "daIwEBCWL0dXm+aFzGjdYvywspmfj8K2Ukdq4UBUSZbLROVhA7JjSYZa8OkFbl90Bco11dqpjTtzjLu0LGsKHw==",
-            "IV": "X+Pk6taWIydevcgAtDvi0g=="
-          },
-          "consumerSecret": {
-            "EncryptedValue": "a6NKCf1TCza/p074NbP1QpqG9YLiQjysnk+CDE2GsCM58Ti98IIFXDU7gN8nyA6YzHpjUDx2wAFIzt1HeM/DKyiRIvD05KqjHLYww6FcauM=",
-            "IV": "VSweQbGAEqPBXXNdBas3gA=="
-          },
-          "expiresAt": "-1",
-          "issuedAt": "1694199580447",
-          "status": "approved"
-        },
-        {
-          "consumerKey": "test153",
-          "consumerSecret": "6Wr30X2JASQew2htest",
-          "expiresAt": "1694199760844",
-          "issuedAt": "1694199580844",
-          "status": "approved"
-        }
-      ],
-      "developerId": "8770a62a-791d-4ba3-9502-ac5bde4f84ff",
-      "lastModifiedAt": "1694199580434",
-      "name": "developer-test-app",
-      "status": "approved",
-      "appFamily": "default"
+  "appId": "562d95e2-9336-4bab-9c45-89bdd87fd5e5",
+  "attributes": [
+    {
+      "name": "DisplayName",
+      "value": "test-app"
     }
-
+  ],
+  "createdAt": "1694757751084",
+  "credentials": [
+    {
+      "apiProducts": [
+        {
+          "apiproduct": "github-apiproduct",
+          "status": "approved"
+        }
+      ],
+      "consumerKey": {
+        "EncryptedValue": "szkeP0E4p7pL+5vmjlmyQu5pcqtXi7XSFG0hPDA6ZEXkzguYp1KqYOPaDFVdwLZ3Ud1FUyiXFFJ5JgRrX178sQ==",
+        "IV": "yaVerlxW4+3qfDAxIZazTg=="
+      },
+      "consumerSecret": {
+        "EncryptedValue": "rhonVKGhs/O94CCz5PBmg/oBj0VFExxptPum0lwiZ2xa/rTKqitv4osx6JH4wk72txrC60/Idta6lnMM5r8NZ8UiJHTkLt+ggGGXbx2Bs28=",
+        "IV": "Hwrq2r9zs9EeAyEZxkn24A=="
+      },
+      "expiresAt": "-1",
+      "issuedAt": "1694757751130",
+      "status": "approved"
+    }
+  ],
+  "developerId": "72d760c2-66dd-4358-b40c-e3ef8eee1e35",
+  "lastModifiedAt": "1694757751084",
+  "name": "test-app",
+  "status": "approved",
+  "appFamily": "default"
+  }
 jobs:
   apigee-window-artifacts:
     name: Decrypt Json Payload
