@@ -1,3 +1,48 @@
+try {
+    $git_token = $env:token
+    
+    $env:JSON_FILE_PATH = "kvmdata/kvmdata.json"
+
+    # Load JSON content from the file
+    $jsonContent = Get-Content $env:JSON_FILE_PATH -Raw | ConvertFrom-Json
+    Write-Host "jsonContent: $jsonContent"
+
+    # Decryption key
+    $keyHex = $env:key
+
+    # Specify the fields you want to encrypt
+    $fieldsToEncrypt = $env:fieldsToEncrypt -split ","
+    Write-Host "fieldsToEncrypt: $fieldsToEncrypt"
+
+    # Define the path to the fields in your JSON data
+    $fieldPath = $env:FIRST_LEVEL_OBJECT
+
+    Write-Host "Got data from FUNCTION...!"
+
+    # Call the Encrypt-JsonData function to encrypt the specified fields
+    $jsonContent.$fieldPath = Encrypt-JsonData -data $jsonContent.$fieldPath -fieldsToEncrypt $fieldsToEncrypt -keyHex $keyHex
+
+    # Convert the JSON data back to a string
+    $encryptedJsonData = $jsonContent | ConvertTo-Json -Depth 10
+
+    Write-Host "Encrypted data: $encryptedJsonData"
+
+    # Now you have the encrypted JSON data with values updated.
+    # ...
+
+}
+catch {
+    Write-Host "An error occurred: $_"
+}
+
+
+
+
+
+
+
+
+
 # Define a function to encrypt the JSON data and return the encrypted JSON
 function Encrypt-JsonData {
     param (
@@ -36,44 +81,6 @@ function Encrypt-JsonData {
     # Return the modified JSON data
     return $data
 }
-
-try {
-    $git_token = $env:token
-    
-    $env:JSON_FILE_PATH = "kvmdata/kvmdata.json"
-
-    # Load JSON content from the file
-    $jsonContent = Get-Content $env:JSON_FILE_PATH -Raw | ConvertFrom-Json
-    Write-Host "jsonContent: $jsonContent"
-
-    # Decryption key
-    $keyHex = $env:key
-
-    # Specify the fields you want to encrypt
-    $fieldsToEncrypt = $env:fieldsToEncrypt -split ","
-    Write-Host "fieldsToEncrypt: $fieldsToEncrypt"
-
-    # Define the path to the fields in your JSON data
-    $fieldPath = $env:FIRST_LEVEL_OBJECT
-
-    Write-Host "Got data from FUNCTION...!"
-
-    # Call the Encrypt-JsonData function to encrypt the specified fields
-    $jsonContent.$fieldPath = Encrypt-JsonData -data $jsonContent.$fieldPath -fieldsToEncrypt $fieldsToEncrypt -keyHex $keyHex
-
-    # Convert the JSON data back to a string
-    $encryptedJsonData = $jsonContent | ConvertTo-Json -Depth 10
-
-    Write-Host "Encrypted data: $encryptedJsonData"
-
-    # Now you have the encrypted JSON data with values updated.
-    # ...
-
-}
-catch {
-    Write-Host "An error occurred: $_"
-}
-
 
 
 
