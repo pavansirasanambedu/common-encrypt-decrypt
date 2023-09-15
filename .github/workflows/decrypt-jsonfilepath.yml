@@ -8,7 +8,7 @@ env:
   key: ${{ secrets.key }}
   FIELDS_TO_DECRYPT: "name,value"
   FIRST_LEVEL_OBJECT: "KeyValueEntries"
-  FIRST_ITTERATE_OBJECT: "credential"
+  # FIRST_ITTERATE_OBJECT: "KeyValueEntry"
   JSON_FILE_PATH: "encrypt-kvmdata/encrypt-kvmdata.json"  # Update this with the actual file path
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
 
           
           $env:firstobject = $env:FIRST_LEVEL_OBJECT # KeyValueEntries
-          $env:firstitterateobject = $env:FIRST_ITTERATE_OBJECT  # credential
+          # $env:firstitterateobject = $env:FIRST_ITTERATE_OBJECT  # credential
 
           # Define your GitHub username, repository names, branch names, and file paths
           $env:targetgithubUsername = "pavansirasanambedu"
