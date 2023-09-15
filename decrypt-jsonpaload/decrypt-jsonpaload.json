@@ -15,14 +15,8 @@
           "status": "approved"
         }
       ],
-      "consumerKey": {
-        "EncryptedValue": "szkeP0E4p7pL+5vmjlmyQu5pcqtXi7XSFG0hPDA6ZEXkzguYp1KqYOPaDFVdwLZ3Ud1FUyiXFFJ5JgRrX178sQ==",
-        "IV": "yaVerlxW4+3qfDAxIZazTg=="
-      },
-      "consumerSecret": {
-        "EncryptedValue": "rhonVKGhs/O94CCz5PBmg/oBj0VFExxptPum0lwiZ2xa/rTKqitv4osx6JH4wk72txrC60/Idta6lnMM5r8NZ8UiJHTkLt+ggGGXbx2Bs28=",
-        "IV": "Hwrq2r9zs9EeAyEZxkn24A=="
-      },
+      "consumerKey": "fBvH9Vw1A9oMBR3irEDgArW1zoT0DkqUfzDHupKSim9tREJP",
+      "consumerSecret": "iGEZFvktmOEgB57jGFzFRIyv8yq00maYaixBHbAvcT70q6xJN28IGWuH58GcauOS",
       "expiresAt": "-1",
       "issuedAt": "1694757751130",
       "status": "approved"
