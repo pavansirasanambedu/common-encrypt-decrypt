@@ -7,6 +7,9 @@ env:
   DEPLOYMENT_NAME: Decrypt Json Payload
   key: ${{ secrets.key }}
   FIELDS_TO_DECRYPT: "consumerKey,consumerSecret"
+  FIRST_LEVEL_OBJECT: "credentials"
+  FIRST_ITTERATE_OBJECT: "credential"
+  
   JSON_DATA: |
     {
       "appId": "37577536-9ab3-4378-945f-e72fe1c6b257",
@@ -68,8 +71,12 @@ jobs:
           $env:ORG = "${{ secrets.APIGEE_ORG }}"
           $env:token = "${{ secrets.GIT_TOKEN }}"
           $env:key = "${{ secrets.key }}"
+          
           $env:fieldsToDecrypt = $env:FIELDS_TO_DECRYPT
           $env:jsonInput = $env:JSON_DATA
+          $env:firstobject = $env:FIRSTLEVELOBJECT
+          $env:firstitterateobject = $env:FIRST_ITTERATE_OBJECT
+          
           
           # # Pass the JSON_DATA environment variable as input to your script
           # $env:jsonInput = $env:JSON_DATA | ConvertFrom-Json
