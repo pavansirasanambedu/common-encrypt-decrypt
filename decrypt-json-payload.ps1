@@ -7,12 +7,9 @@ $firstitterateobjectname = $env:firstitterateobject
 
 # Specify the fields you want to decrypt
 $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
-$decryptedValues = @{}  # Create an empty hashtable to store decrypted values
+$decryptedJsonObject = $fileContent | ConvertFrom-Json  # Create a copy of the original JSON object
 
 try {
-    # Parse the JSON content into a PowerShell object
-    $jsonObject = $fileContent | ConvertFrom-Json
-
     # Decryption key (use the same key you used for encryption)
     $keyHex = $env:key
 
@@ -27,7 +24,7 @@ try {
         Write-Host "Decrypting field: $field"
 
         # Loop through credentials
-        foreach ($entry in $jsonObject.$firstitterateobjectname) {
+        foreach ($entry in $decryptedJsonObject.$firstitterateobjectname) {
             Write-Host "Entered into 2nd for each...!"
             if ($entry.$field) {
                 $encryptedValueBase64 = $entry.$field.EncryptedValue
@@ -45,8 +42,8 @@ try {
                     $decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
                     $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
 
-                    # Store the decrypted value in the hashtable
-                    $decryptedValues[$field] = $decryptedText
+                    # Update the copied JSON object with the decrypted value
+                    $entry.$field = $decryptedText
                 } else {
                     Write-Host "IV is missing for $field. Skipping decryption."
                 }
@@ -54,10 +51,12 @@ try {
         }
     }
 
-    # Display the decrypted values
-    Write-Host "Decrypted Data:"
-    Write-Host "Decrypted consumerKey: $($decryptedValues['consumerKey'])"
-    Write-Host "Decrypted consumerSecret: $($decryptedValues['consumerSecret'])"
+    # Convert the entire updated JSON object back to JSON format
+    $updatedJsonContent = $decryptedJsonObject | ConvertTo-Json -Depth 10
+
+    # Display the updated JSON content
+    Write-Host "Updated JSON Content:"
+    Write-Host $updatedJsonContent
 
     # The rest of your code for updating the GitHub repository goes here
 
