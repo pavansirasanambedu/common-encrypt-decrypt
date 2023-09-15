@@ -8,6 +8,10 @@ $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
  $firstlevelobjectname = $env:firstobject                      #$env:FIRSTLEVELOBJECT # credentials
  $firstlevelitteratename = $env:firstitterateobject              #$env:FIRST_ITTERATE_OBJECT  # credential
 
+ Write-Host "firstlevelobjectname:$firstlevelobjectname"
+ Write-Host "firstlevelitteratename:$firstlevelitteratename"
+ 
+
 try {
     # Parse the JSON content into a PowerShell object
     $jsonObject = $fileContent | ConvertFrom-Json
@@ -26,11 +30,11 @@ try {
         Write-Host "Decrypting field: $field"
 
         # Loop through credentials
-        foreach ($firstlevelitteratename in $jsonObject.$firstlevelobjectname) {
+        foreach ($credential in $jsonObject.credentials) {
             Write-Host "Entered into 2nd for each...!"
-            if ($firstlevelitteratename.$field) {
-                $encryptedValueBase64 = $firstlevelitteratename.$field.EncryptedValue
-                $IVBase64 = $firstlevelitteratename.$field.IV
+            if ($credential.$field) {
+                $encryptedValueBase64 = $credential.$field.EncryptedValue
+                $IVBase64 = $credential.$field.IV
 
                 if (![string]::IsNullOrEmpty($IVBase64)) {
                     # Convert IV and encrypted value to bytes
@@ -45,7 +49,7 @@ try {
                     $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
 
                     # Update the JSON object with the decrypted value
-                    $firstlevelitteratename.$field = $decryptedText
+                    $credential.$field = $decryptedText
                 } else {
                     Write-Host "IV is missing for $field. Skipping decryption."
                 }
