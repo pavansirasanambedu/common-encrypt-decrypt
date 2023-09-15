@@ -9,7 +9,7 @@ env:
   FIELDS_TO_DECRYPT: "consumerKey,consumerSecret"
   FIRST_LEVEL_OBJECT: "credentials"
   FIRST_ITTERATE_OBJECT: "credential"
-  JSON_FILE_PATH: "path/to/your/jsonfile.json"  # Update this with the actual file path
+  JSON_FILE_PATH: "encrypt-kvmdata/encrypt-kvmdata.json"  # Update this with the actual file path
 
 jobs:
   apigee-window-artifacts:
@@ -42,8 +42,8 @@ jobs:
           # Define your GitHub username, repository names, branch names, and file paths
           $env:targetgithubUsername = "pavansirasanambedu"
           $env:repositoryName = "common-encrypt-decrypt"
-          $env:targetBranchName = "decrypt/jsonpayload"
-          $env:targetFilePath = "decrypt-jsonpaload/decrypt-jsonpaload.json"
+          $env:targetBranchName = "decrypt/kvmdata"
+          $env:targetFilePath = "decrypt-kvmdata/decrypt-kvmdata.json"
           
           # Run your script with Pester
           Invoke-Pester ./decrypt-json-payload.ps1 -Passthru
