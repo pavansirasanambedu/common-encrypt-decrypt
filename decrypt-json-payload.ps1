@@ -2,6 +2,9 @@
 $git_token = $env:token
 $fileContent = $env:jsonInput
 
+$firstobjectname = $env:firstobject
+$firstitterateobjectname = $env:firstitterateobject
+
 # Specify the fields you want to decrypt
 $fieldsToDecrypt = $env:fieldsToDecrypt -split ","
 
@@ -23,10 +26,10 @@ try {
         Write-Host "Decrypting field: $field"
 
         # Loop through credentials
-        foreach ($credential in $jsonObject.credentials) {
+        foreach ($firstitterateobjectname in $jsonObject.$firstobjectname) {
             Write-Host "Entered into 2nd for each...!"
-            if ($credential.$field) {
-                $encryptedValueBase64 = $credential.$field.EncryptedValue
+            if ($firstitterateobjectname.$field) {
+                $encryptedValueBase64 = $firstitterateobjectname.$field.EncryptedValue
                 $IVBase64 = $credential.$field.IV
 
                 if (![string]::IsNullOrEmpty($IVBase64)) {
@@ -42,7 +45,7 @@ try {
                     $decryptedText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
 
                     # Update the JSON object with the decrypted value
-                    $credential.$field = $decryptedText
+                    $firstitterateobjectname.$field = $decryptedText
                 } else {
                     Write-Host "IV is missing for $field. Skipping decryption."
                 }
