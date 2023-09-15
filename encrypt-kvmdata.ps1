@@ -43,6 +43,9 @@ try {
     $fieldsToEncrypt = $env:fieldsToEncrypt -split ","
     Write-Host "fieldsToEncrypt: $fieldsToEncrypt"
 
+    $jsonObject = $jsonContent | ConvertFrom-Json
+    Write-Host $jsonObject
+
     # Define the path to the fields in your JSON data
     $fieldPath = $env:FIRST_LEVEL_OBJECT
 
