@@ -17,6 +17,10 @@ jobs:
       run: |
         # Execute the PowerShell script and store its output in a variable
         OUTPUT_FROM_SCRIPT=$(pwsh -File ./variable-call.ps1)
+
+        # Print the output to the workflow log
+        echo "Variable value: $OUTPUT_FROM_SCRIPT"
+
     
         # Print the output to the workflow log
         echo "Variable value: $OUTPUT_FROM_SCRIPT"
