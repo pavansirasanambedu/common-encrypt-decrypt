@@ -20,10 +20,3 @@ jobs:
 
         # Print the output to the workflow log
         echo "Variable value: $OUTPUT_FROM_SCRIPT"
-
-    
-        # Print the output to the workflow log
-        echo "Variable value: $OUTPUT_FROM_SCRIPT"
-
-        # Print the output to the workflow log
-        echo "Variable value: $OUTPUT_FROM_SCRIPT"
