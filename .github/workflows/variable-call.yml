@@ -22,4 +22,4 @@ jobs:
 
       - name: Debug Print Variable
         run: |
-          echo "Variable value: ${{ steps.print_variable.outputs }}""
+          echo "Variable value: ${{ steps.print_variable.outputs }}"
