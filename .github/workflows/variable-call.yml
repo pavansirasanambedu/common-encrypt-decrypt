@@ -1,0 +1,27 @@
+name: Send Variable from Script File to YAML File
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Send Variable from Script File to YAML File
+        run: |
+          powershell ./script.ps1
+
+      - name: Print Variable in YAML File
+        id: print_variable
+        run: |
+          echo "Variable value: ${{ steps.send_variable.outputs.my_variable }}"
+
+      - name: Debug Print Variable
+        run: |
+          echo "Variable value: ${{ steps.print_variable.outputs }}""
