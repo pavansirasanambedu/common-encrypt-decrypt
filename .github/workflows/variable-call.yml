@@ -1,6 +1,9 @@
 name: PowerShell Script Example
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   run-powershell-script:
@@ -14,7 +17,7 @@ jobs:
       run: chmod +x variable-call.ps1
 
     - name: Run PowerShell script
-      shell: pwsh
+      shell: /usr/bin/pwsh -command ". '{0}'"
       run: |
         # Execute the PowerShell script and store its output in a variable
         OUTPUT_FROM_SCRIPT=$(./variable-call.ps1)
