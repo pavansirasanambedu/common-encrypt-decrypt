@@ -14,10 +14,12 @@ jobs:
       run: chmod +x variable-call.ps1
 
     - name: Run PowerShell script
-      shell: /usr/bin/pwsh -command ". '{0}'"
       run: |
         # Execute the PowerShell script and store its output in a variable
-        OUTPUT_FROM_SCRIPT=$(./variable-call.ps1)
+        OUTPUT_FROM_SCRIPT=$(pwsh -File ./variable-call.ps1)
+    
+        # Print the output to the workflow log
+        echo "Variable value: $OUTPUT_FROM_SCRIPT"
 
         # Print the output to the workflow log
         echo "Variable value: $OUTPUT_FROM_SCRIPT"
