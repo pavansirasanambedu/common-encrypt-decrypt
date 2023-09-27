@@ -1,9 +1,6 @@
 name: PowerShell Script Example
 
-on:
-  push:
-    branches:
-      - main
+on: push
 
 jobs:
   run-powershell-script:
