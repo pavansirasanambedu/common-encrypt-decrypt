@@ -1,30 +1,25 @@
-name: Send Variable from Script File to YAML File
+name: Example Workflow
 
 on: push
 
 jobs:
-  build:
+  example_job:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Send Variable from Script File to YAML File
+      - name: Run PowerShell script
+        id: run_script
         shell: pwsh
         run: |
-          Invoke-Pester ./variable-call.ps1 -Passthru
+          # Run your PowerShell script and capture the output
+          $output = ./scripts.ps1
+          echo "::set-output name=my_output::$output"
 
-      - name: Print Variable in YAML File
-        id: print_variable
+      - name: Print Captured Output
         run: |
-          echo "Variable value: ${{ steps.send_variable.outputs.my_variable }}"
-
-      - name: Debug Print Variable
-        run: |
-          echo "Variable value: ${{ steps.print_variable.outputs }}"
-
-      - name: Debug Invoke-Pester Output
-        run: |
-          echo "Invoke-Pester output: ${{ steps.send_variable.stdout }}"
-
+          # Access the captured output variable and print it
+          captured_output="${{ steps.run_script.outputs.my_output }}"
+          echo "Captured Output: $captured_output"
