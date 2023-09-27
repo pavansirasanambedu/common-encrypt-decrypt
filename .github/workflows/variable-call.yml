@@ -23,3 +23,8 @@ jobs:
       - name: Debug Print Variable
         run: |
           echo "Variable value: ${{ steps.print_variable.outputs }}"
+
+      - name: Debug Invoke-Pester Output
+        run: |
+          echo "Invoke-Pester output: ${{ steps.send_variable.stdout }}"
+
