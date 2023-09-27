@@ -1,9 +1,6 @@
 name: Send Variable from Script File to YAML File
 
-on:
-  push:
-    branches:
-      - main
+on: push
 
 jobs:
   build:
