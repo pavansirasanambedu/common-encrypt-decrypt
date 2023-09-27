@@ -18,3 +18,7 @@ Write-Host "JSON Messages: $jsonMessages"
 # Set the messages as environment variables
 Write-Host "::set-output name=MY_MESSAGES::$messages"
 Write-Host "::set-output name=MY_JSON_MESSAGES::$jsonMessages"
+
+$response = Invoke-RestMethod -Uri "https://httpbin.org/get" -Method:Get -ContentType "application/json" -ErrorAction:Stop -TimeoutSec 60 -OutFile "test.json"
+Write-Host "Response: $response"
+
