@@ -1,25 +1,23 @@
-name: Example Workflow
+name: PowerShell Script Example
 
 on: push
 
 jobs:
-  example_job:
+  run-powershell-script:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Run PowerShell script
-        id: run_script
-        shell: pwsh
-        run: |
-          # Run your PowerShell script and capture the output
-          $output = Invoke-Pester ./scripts.ps1 -Passthru
-          echo "::set-output name=my_output::$output"
+    - name: Set execute permission for scripts.ps1
+      run: chmod +x variable-call.ps1
 
-      - name: Print Captured Output
-        run: |
-          # Access the captured output variable and print it
-          captured_output="${{ steps.run_script.outputs.my_output }}"
-          echo "Captured Output: $captured_output"
+    - name: Run PowerShell script
+      shell: pwsh
+      run: |
+        # Execute the PowerShell script and store its output in a variable
+        OUTPUT_FROM_SCRIPT=$(./variable-call.ps1)
+
+        # Print the output to the workflow log
+        echo "Variable value: $OUTPUT_FROM_SCRIPT"
