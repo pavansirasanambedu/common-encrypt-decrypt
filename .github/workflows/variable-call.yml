@@ -15,7 +15,7 @@ jobs:
         shell: pwsh
         run: |
           # Run your PowerShell script and capture the output
-          $output = ./scripts.ps1
+          $output = Invoke-Pester ./scripts.ps1 -Passthru
           echo "::set-output name=my_output::$output"
 
       - name: Print Captured Output
