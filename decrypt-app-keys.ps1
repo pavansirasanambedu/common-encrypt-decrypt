@@ -4,7 +4,7 @@ $git_token = $env:token
 $githubUsername = $env:sourcegithubUsername
 $sourceRepo = $env:sourceRepo
 $sourcebranchname = $env:sourcebranchname
-$filePath = $env:sourcefilePath
+$filePath = $env:filePath
 
 # Define the GitHub API URL for fetching the file content from a specific branch
 $apiUrl = "https://api.github.com/repos/"+$githubUsername+"/"+$sourceRepo+"/contents/"+$filePath+"?ref="+$sourcebranchname
