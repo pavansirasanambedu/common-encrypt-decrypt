@@ -133,7 +133,7 @@ try {
 #             Write-Host "An error occurred while creating the file: $_"
 #         }
 #     }
-# }
-# catch {
-#     Write-Host "An error occurred: $_"
-# }
+}
+catch {
+    Write-Host "An error occurred: $_"
+}
