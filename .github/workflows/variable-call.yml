@@ -1,27 +1,111 @@
-name: Send Variable from Script File to YAML File
+name: API Trigger
 
-on:
-  push:
-    branches:
-      - main
+on: 
+  workflow_dispatch:
 
 jobs:
-  build:
+  apigee-window-artifacts:
+    name: API Trigger
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
+      - name: Set Git identity
+        run: |
+          git config --global user.email "rajeshjanapti533@gmail.com"
+          git config --global user.name "pavansirasanambedu"
+
       - name: Check out repository code
         uses: actions/checkout@v3
-
-      - name: Send Variable from Script File to YAML File
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          token: "${{ secrets.GIT_TOKEN }}"          
+      
+      - name: API Trigger
+        shell: pwsh
         run: |
-          powershell ./script.ps1
+          Invoke-Pester ./variable-call.ps1 -Passthru
 
-      - name: Print Variable in YAML File
-        id: print_variable
-        run: |
-          echo "Variable value: ${{ steps.send_variable.outputs.my_variable }}"
 
-      - name: Debug Print Variable
-        run: |
-          echo "Variable value: ${{ steps.print_variable.outputs }}""
+
+
+
+
+
+
+
+
+# name: PowerShell Script Example
+
+# on: push
+
+# jobs:
+#   run-powershell-script:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
+
+#     - name: Set execute permission for scripts.ps1
+#       run: chmod +x variable-call.ps1
+
+#     - name: Run PowerShell script
+#       run: |
+#         # Execute the PowerShell script and store its output in a variable
+#         OUTPUT_FROM_SCRIPT=$(pwsh -File ./variable-call.ps1)
+
+#         # Print the output to the workflow log
+#         echo "Variable value: $OUTPUT_FROM_SCRIPT"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: Send Variable from Script File to YAML File
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Check out repository code
+#         uses: actions/checkout@v3
+
+#       - name: Send Variable from Script File to YAML File
+#         run: |
+#           powershell ./script.ps1
+
+#       - name: Print Variable in YAML File
+#         id: print_variable
+#         run: |
+#           echo "Variable value: ${{ steps.send_variable.outputs.my_variable }}"
+
+#       - name: Debug Print Variable
+#         run: |
+#           echo "Variable value: ${{ steps.print_variable.outputs }}""
