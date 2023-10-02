@@ -1,22 +1,63 @@
-name: PowerShell Script Example
+name: API Trigger
 
 on: push
+  # workflow_dispatch:
 
 jobs:
-  run-powershell-script:
+  apigee-window-artifacts:
+    name: API Trigger
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Set Git identity
+        run: |
+          git config --global user.email "rajeshjanapti533@gmail.com"
+          git config --global user.name "pavansirasanambedu"
 
-    - name: Set execute permission for scripts.ps1
-      run: chmod +x variable-call.ps1
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          token: "${{ secrets.GIT_TOKEN }}"          
+      
+      - name: API Trigger
+        shell: pwsh
+        run: |
+          Invoke-Pester ./variable-call.ps1 -Passthru
 
-    - name: Run PowerShell script
-      run: |
-        # Execute the PowerShell script and store its output in a variable
-        OUTPUT_FROM_SCRIPT=$(pwsh -File ./variable-call.ps1)
 
-        # Print the output to the workflow log
-        echo "Variable value: $OUTPUT_FROM_SCRIPT"
+
+
+
+
+
+
+
+
+# name: PowerShell Script Example
+
+# on: push
+
+# jobs:
+#   run-powershell-script:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
+
+#     - name: Set execute permission for scripts.ps1
+#       run: chmod +x variable-call.ps1
+
+#     - name: Run PowerShell script
+#       run: |
+#         # Execute the PowerShell script and store its output in a variable
+#         OUTPUT_FROM_SCRIPT=$(pwsh -File ./variable-call.ps1)
+
+#         # Print the output to the workflow log
+#         echo "Variable value: $OUTPUT_FROM_SCRIPT"
